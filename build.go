@@ -41,7 +41,15 @@ func handleMd(mdPath string) {
 	}
 
 	os.MkdirAll(buildPath, 0755)
+
+	cfg := parseConfig()
 	fm.Body = string(bodyHtml)
+
+	// combine config and matter structs
+	combined := struct {
+		Cfg Config
+		Fm Matter
+	}{cfg, fm}
 
 	htmlFile, err := os.Create(filepath.Join(buildPath, "index.html"))
 	if err != nil {
@@ -52,7 +60,7 @@ func handleMd(mdPath string) {
 		fm.Template = "text.html"
 	}
 	tmpl := processTemplate(fm.Template)
-	err = tmpl.Execute(htmlFile, fm)
+	err = tmpl.Execute(htmlFile, combined)
 	if err != nil {
 		printErr(err)
 		return

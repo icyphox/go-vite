@@ -6,7 +6,7 @@ import (
 )
 
 var bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
-	bf.SmartypantsDashes | bf.NofollowLinks | bf.FootnoteReturnLinks
+	bf.SmartypantsDashes | bf.NofollowLinks
 
 func mdRender(input []byte) []byte {
 	return bf.Run(

@@ -5,7 +5,7 @@ import (
 	"github.com/adrg/frontmatter"
 )
 
-type matter struct {
+type Matter struct {
 	Template string `yaml:"template"`
 	URL      string `yaml:"url"`
 	Title    string `yaml:"title"`
@@ -16,8 +16,8 @@ type matter struct {
 
 // Parses frontmatter, populates the `matter` struct and
 // returns the rest
-func parseFrontmatter(inputBytes []byte) ([]byte, matter) {
-	m := matter{}
+func parseFrontmatter(inputBytes []byte) ([]byte, Matter) {
+	m := Matter{}
 	input := bytes.NewReader(inputBytes)
 	rest, err := frontmatter.Parse(input, &m)
 
