@@ -31,8 +31,8 @@ options:
 	case "build":
 		viteBuild()
 	case "new":
-		// newPath := args[2]
-		// viteNew(newPath)
+		newPath := args[2]
+		viteNew(newPath)
 	}
 
 }
