@@ -1,0 +1,9 @@
+go-vite
+-------
+
+vite, but in Go.
+
+Still fairly broken, but aims for feature parity with vite[1]. Uses Go
+templates instead of Jinja.
+
+[1]: https://github.com/icyphox/vite
