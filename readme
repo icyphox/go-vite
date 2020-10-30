@@ -3,11 +3,8 @@ go-vite
 
 vite, but in Go.
 
-Works with vite projects. You will have to rework Jinja2 templates to Go
-templates. Look at my site[2] for an example.
-
-[1]: https://github.com/icyphox/vite
-[2]: https://github.com/icyphox/site
+Works with vite projects. You will have to rework Jinja1 templates to Go
+templates. Look at my site[1] for an example.
 
 INSTALLING
 
@@ -17,3 +14,6 @@ Clone this repository and run
     # doas make install
 
 Requires `go` to be installed, obviously.
+
+
+[1]: https://github.com/icyphox/site
