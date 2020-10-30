@@ -24,6 +24,6 @@ func mdRender(input []byte) []byte {
 				),
 			),
 		),
-        bf.WithExtensions(bfExts),
+		bf.WithExtensions(bfExts),
 	)
 }

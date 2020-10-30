@@ -4,10 +4,23 @@ import (
 	"github.com/cross-cpm/go-shutil"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"text/template"
 )
+
+var cfg = parseConfig()
+
+func execute(cmds []string) {
+	for _, cmd := range cmds {
+		_, err := exec.Command(cmd).Output()
+		printMsg("executing:", cmd)
+		if err != nil {
+			printErr(err)
+		}
+	}
+}
 
 func processTemplate(tmplPath string) *template.Template {
 	tmplFile := filepath.Join("templates", tmplPath)
@@ -42,13 +55,12 @@ func handleMd(mdPath string) {
 
 	os.MkdirAll(buildPath, 0755)
 
-	cfg := parseConfig()
 	fm.Body = string(bodyHtml)
 
 	// combine config and matter structs
 	combined := struct {
 		Cfg Config
-		Fm Matter
+		Fm  Matter
 	}{cfg, fm}
 
 	htmlFile, err := os.Create(filepath.Join(buildPath, "index.html"))
@@ -69,6 +81,8 @@ func handleMd(mdPath string) {
 }
 
 func viteBuild() {
+	printMsg("executing pre-build actions")
+	execute(cfg.Prebuild)
 	err := filepath.Walk("./pages", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			printErr(err)
@@ -103,4 +117,7 @@ func viteBuild() {
 	if err != nil {
 		printErr(err)
 	}
+	printMsg("build complete")
+	printMsg("executing post-build actions...")
+	execute(cfg.Postbuild)
 }
