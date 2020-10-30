@@ -7,6 +7,9 @@ import (
 
 var bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
 	bf.SmartypantsDashes | bf.NofollowLinks
+var bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
+	bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
+	bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
 
 func mdRender(input []byte) []byte {
 	return bf.Run(
@@ -21,5 +24,6 @@ func mdRender(input []byte) []byte {
 				),
 			),
 		),
+        bf.WithExtensions(bfExts),
 	)
 }
