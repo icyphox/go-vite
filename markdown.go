@@ -1,8 +1,8 @@
 package main
 
 import (
+	bfc "github.com/Depado/bfchroma"
 	bf "github.com/russross/blackfriday/v2"
-    bfc "github.com/Depado/bfchroma"
 )
 
 var bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
@@ -10,16 +10,16 @@ var bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
 
 func mdRender(input []byte) []byte {
 	return bf.Run(
-        input,
-        bf.WithRenderer(
-            bfc.NewRenderer(
-                bfc.Style("bw"),
-                bfc.Extend(
-                    bf.NewHTMLRenderer(bf.HTMLRendererParameters{
-                        Flags: bfFlags,
-                    }),
-                ),
-            ),
-        ),
+		input,
+		bf.WithRenderer(
+			bfc.NewRenderer(
+				bfc.Style("bw"),
+				bfc.Extend(
+					bf.NewHTMLRenderer(bf.HTMLRendererParameters{
+						Flags: bfFlags,
+					}),
+				),
+			),
+		),
 	)
 }

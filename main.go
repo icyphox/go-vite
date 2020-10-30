@@ -18,11 +18,11 @@ options:
     new PATH        create a new markdown post
         `
 
-    // TODO: make arg parsing less shit
+	// TODO: make arg parsing less shit
 
-    if len(args) <= 1 {
-        fmt.Println(helpStr)
-    }
+	if len(args) <= 1 {
+		fmt.Println(helpStr)
+	}
 
 	switch args[1] {
 	case "init":
