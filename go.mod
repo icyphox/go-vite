@@ -9,3 +9,5 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1
 	gopkg.in/yaml.v2 v2.3.0
 )
+
+replace gopkg.in/russross/blackfriday.v2 v2.0.1 => github.com/russross/blackfriday/v2 v2.0.1
