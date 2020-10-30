@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/cross-cpm/go-shutil"
 	"io/ioutil"
 	"os"
@@ -14,10 +15,11 @@ var cfg = parseConfig()
 
 func execute(cmds []string) {
 	for _, cmd := range cmds {
-		_, err := exec.Command(cmd).Output()
+		out, err := exec.Command(cmd).Output()
 		printMsg("running:", cmd)
 		if err != nil {
 			printErr(err)
+			fmt.Println(string(out))
 		}
 	}
 }
