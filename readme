@@ -3,7 +3,17 @@ go-vite
 
 vite, but in Go.
 
-Still fairly broken, but aims for feature parity with vite[1]. Uses Go
-templates instead of Jinja.
+Works with vite projects. You will have to rework Jinja2 templates to Go
+templates. Look at my site[2] for an example.
 
 [1]: https://github.com/icyphox/vite
+[2]: https://github.com/icyphox/site
+
+INSTALLING
+
+Clone this repository and run
+    
+    $ make
+    # doas make install
+
+Requires `go` to be installed, obviously.
