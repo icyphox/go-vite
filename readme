@@ -3,7 +3,7 @@ go-vite
 
 vite, but in Go.
 
-Works with vite projects. You will have to rework Jinja1 templates to Go
+Works with vite projects. You will have to rework Jinja2 templates to Go
 templates. Look at my site[1] for an example.
 
 INSTALLING
