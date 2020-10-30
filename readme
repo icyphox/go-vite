@@ -15,5 +15,14 @@ Clone this repository and run
 
 Requires `go` to be installed, obviously.
 
+USAGE
+
+    A simple and minimal static site generator.
+
+    options:
+        init PATH       create vite project at PATH
+        build           builds the current project
+        new PATH        create a new markdown post
+
 
 [1]: https://github.com/icyphox/site
