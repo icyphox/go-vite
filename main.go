@@ -18,9 +18,10 @@ options:
     new PATH        create a new markdown post
         `
 
-	if len(args) <= 2 {
-		fmt.Println(helpStr)
-		return
+    // TODO: make arg parsing less shit
+
+    if len(args) <= 1 {
+        fmt.Println(helpStr)
     }
 
 	switch args[1] {
