@@ -15,7 +15,7 @@ var cfg = parseConfig()
 func execute(cmds []string) {
 	for _, cmd := range cmds {
 		_, err := exec.Command(cmd).Output()
-		printMsg("executing:", cmd)
+		printMsg("running:", cmd)
 		if err != nil {
 			printErr(err)
 		}
@@ -81,7 +81,7 @@ func handleMd(mdPath string) {
 }
 
 func viteBuild() {
-	printMsg("executing pre-build actions")
+	printMsg("executing pre-build actions...")
 	execute(cfg.Prebuild)
 	err := filepath.Walk("./pages", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -117,7 +117,7 @@ func viteBuild() {
 	if err != nil {
 		printErr(err)
 	}
-	printMsg("build complete")
+	printMsg("site build complete")
 	printMsg("executing post-build actions...")
 	execute(cfg.Postbuild)
 }
