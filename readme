@@ -11,7 +11,7 @@ INSTALLING
 Clone this repository and run
     
     $ make
-    # doas make install
+    # make install
 
 Requires `go` to be installed, obviously.
 
