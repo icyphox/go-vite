@@ -93,7 +93,7 @@ func handleMd(mdPath string) {
 }
 
 func viteBuild() {
-	if cfg.Prebuild != "" {
+	if len(cfg.Prebuild) == 0 {
 		printMsg("executing pre-build actions...")
 		execute(cfg.Prebuild)
 	}
@@ -134,7 +134,7 @@ func viteBuild() {
 	printMsg("site build complete")
 	printMsg("generating feeds...")
 	generateRSS(posts, cfg)
-	if cfg.Postbuild != "" {
+	if len(cfg.Postbuild) == 0 {
 		printMsg("executing post-build actions...")
 		execute(cfg.Postbuild)
 	}
