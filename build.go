@@ -93,8 +93,10 @@ func handleMd(mdPath string) {
 }
 
 func viteBuild() {
-	printMsg("executing pre-build actions...")
-	execute(cfg.Prebuild)
+	if cfg.Prebuild != "" {
+		printMsg("executing pre-build actions...")
+		execute(cfg.Prebuild)
+	}
 	err := filepath.Walk("./pages", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			printErr(err)
@@ -132,6 +134,8 @@ func viteBuild() {
 	printMsg("site build complete")
 	printMsg("generating feeds...")
 	generateRSS(posts, cfg)
-	printMsg("executing post-build actions...")
-	execute(cfg.Postbuild)
+	if cfg.Postbuild != "" {
+		printMsg("executing post-build actions...")
+		execute(cfg.Postbuild)
+	}
 }

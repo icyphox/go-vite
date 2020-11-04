@@ -26,5 +26,9 @@ USAGE
         build           builds the current project
         new PATH        create a new markdown post
 
+NOTES
+
+vite generates Atom feeds for all documents under the `pages/blog/`
+directory.
 
 [1]: https://github.com/icyphox/site
