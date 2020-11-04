@@ -6,11 +6,15 @@ import (
 )
 
 type Config struct {
-	Title     string
-	Header    string
-	Footer    string
-	Prebuild  []string
-	Postbuild []string
+	Title       string            `yaml:"title"`
+	Header      string            `yaml:"header"`
+	SiteURL     string            `yaml:"siteurl"`
+	Description string            `yaml:"description"`
+	Author      map[string]string `yaml:"author"`
+	Footer      string            `yaml:"footer"`
+	Prebuild    []string          `yaml:"prebuild"`
+	Postbuild   []string          `yaml:"postbuild"`
+	RSSPrefixURL string			  `yaml:"rssprefixurl"`
 }
 
 func parseConfig() Config {

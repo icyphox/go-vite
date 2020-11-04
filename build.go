@@ -13,6 +13,12 @@ import (
 
 var cfg = parseConfig()
 
+type Post struct {
+	fm      Matter
+}
+
+var posts []Post
+
 func execute(cmds []string) {
 	for _, cmd := range cmds {
 		out, err := exec.Command(cmd).Output()
@@ -58,6 +64,10 @@ func handleMd(mdPath string) {
 	os.MkdirAll(buildPath, 0755)
 
 	fm.Body = string(bodyHtml)
+
+	if strings.Contains(relPath, "blog/") {
+		posts = append(posts, Post{fm})
+	}
 
 	// combine config and matter structs
 	combined := struct {
@@ -120,6 +130,8 @@ func viteBuild() {
 		printErr(err)
 	}
 	printMsg("site build complete")
+	printMsg("generating feeds...")
+	generateRSS(posts, cfg)
 	printMsg("executing post-build actions...")
 	execute(cfg.Postbuild)
 }
