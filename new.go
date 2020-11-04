@@ -19,7 +19,7 @@ url: %s
 title:
 subtitle:
 date: %s
----`, url, time.Now().Format("01-02-2006"))
+---`, url, time.Now().Format("2006-01-02"))
 
 	_, err := os.Create(path)
 	if err != nil {
