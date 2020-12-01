@@ -83,7 +83,7 @@ func handleMd(mdPath string) {
 		fm.URL,
 		fm.Title,
 		fm.Subtitle,
-		fm.Date.Time.Format("02 January, 2006"),
+		fm.Date.Time.Format(cfg.DateFmt),
 		fm.Body,
 	}
 	// combine config and matter structs
