@@ -69,11 +69,28 @@ func handleMd(mdPath string) {
 		posts = append(posts, Post{fm})
 	}
 
+	type NewFm struct {
+		Template string
+		URL string
+		Title string
+		Subtitle string
+		Date string
+		Body string
+	}
+
+	var newFm = NewFm {
+		fm.Template,
+		fm.URL,
+		fm.Title,
+		fm.Subtitle,
+		fm.Date.Time.Format("02 January, 2006"),
+		fm.Body,
+	}
 	// combine config and matter structs
 	combined := struct {
 		Cfg Config
-		Fm  Matter
-	}{cfg, fm}
+		Fm  NewFm
+	}{cfg, newFm}
 
 	htmlFile, err := os.Create(filepath.Join(buildPath, "index.html"))
 	if err != nil {
