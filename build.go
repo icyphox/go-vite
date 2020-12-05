@@ -2,22 +2,33 @@ package main
 
 import (
 	"fmt"
-	"github.com/cross-cpm/go-shutil"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
+
+	"github.com/cross-cpm/go-shutil"
 )
 
 var cfg = parseConfig()
 
 type Post struct {
-	fm      Matter
+	Fm Matter
 }
 
 var posts []Post
+
+type NewFm struct {
+	Template string
+	URL      string
+	Title    string
+	Subtitle string
+	Date     string
+	Body     string
+}
 
 func execute(cmds []string) {
 	for _, cmd := range cmds {
@@ -69,16 +80,7 @@ func handleMd(mdPath string) {
 		posts = append(posts, Post{fm})
 	}
 
-	type NewFm struct {
-		Template string
-		URL string
-		Title string
-		Subtitle string
-		Date string
-		Body string
-	}
-
-	var newFm = NewFm {
+	var newFm = NewFm{
 		fm.Template,
 		fm.URL,
 		fm.Title,
@@ -109,6 +111,48 @@ func handleMd(mdPath string) {
 	htmlFile.Close()
 }
 
+func renderIndex(posts []Post) {
+	indexTmpl := processTemplate("index.html")
+	path := filepath.Join("pages", "_index.md")
+
+	// Sort posts by date
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[j].Fm.Date.Time.Before(posts[i].Fm.Date.Time)
+	})
+
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		printErr(err)
+	}
+
+	restContent, fm := parseFrontmatter(content)
+	bodyHtml := mdRender(restContent)
+	fm.Body = string(bodyHtml)
+
+	var newFm = NewFm{
+		fm.Template,
+		fm.URL,
+		fm.Title,
+		fm.Subtitle,
+		fm.Date.Time.Format(cfg.DateFmt),
+		fm.Body,
+	}
+
+	combined := struct {
+		Fm    NewFm
+		Posts []Post
+		Cfg   Config
+	}{newFm, posts, cfg}
+
+	htmlFile, err := os.Create(filepath.Join("build", "index.html"))
+	err = indexTmpl.Execute(htmlFile, combined)
+	if err != nil {
+		printErr(err)
+		return
+	}
+	htmlFile.Close()
+}
+
 func viteBuild() {
 	if len(cfg.Prebuild) != 0 {
 		printMsg("executing pre-build actions...")
@@ -119,7 +163,7 @@ func viteBuild() {
 			printErr(err)
 			return err
 		}
-		if filepath.Ext(path) == ".md" {
+		if filepath.Ext(path) == ".md" && path != filepath.Join("pages", "_index.md") {
 			handleMd(path)
 		} else {
 			f, err := os.Stat(path)
@@ -140,9 +184,13 @@ func viteBuild() {
 		}
 		return nil
 	})
+
 	if err != nil {
 		printErr(err)
 	}
+
+	// Deal with the special snowflake '_index.md'
+	renderIndex(posts)
 
 	_, err = shutil.CopyTree("static", filepath.Join("build", "static"), nil)
 	if err != nil {

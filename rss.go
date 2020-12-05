@@ -1,11 +1,12 @@
 package main
 
 import (
-	. "github.com/gorilla/feeds"
-	"sort"
-	"time"
 	"os"
 	"path/filepath"
+	"sort"
+	"time"
+
+	. "github.com/gorilla/feeds"
 )
 
 func generateRSS(posts []Post, cfg Config) {
@@ -23,7 +24,7 @@ func generateRSS(posts []Post, cfg Config) {
 
 	// Sort posts by date
 	sort.Slice(posts, func(i, j int) bool {
-		return posts[j].fm.Date.Time.Before(posts[i].fm.Date.Time)
+		return posts[j].Fm.Date.Time.Before(posts[i].Fm.Date.Time)
 	})
 
 	atomfile, err := os.Create(filepath.Join("build", "blog", "feed.xml"))
@@ -32,10 +33,10 @@ func generateRSS(posts []Post, cfg Config) {
 	}
 	for _, p := range posts {
 		feed.Items = append(feed.Items, &Item{
-			Title: p.fm.Title,
-			Link:  &Link{Href: cfg.RSSPrefixURL + p.fm.URL},
-			Description: string(p.fm.Body),
-			Created: p.fm.Date.Time,
+			Title:       p.Fm.Title,
+			Link:        &Link{Href: cfg.RSSPrefixURL + p.Fm.URL},
+			Description: string(p.Fm.Body),
+			Created:     p.Fm.Date.Time,
 		})
 	}
 
