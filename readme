@@ -1,10 +1,8 @@
 go-vite
 -------
 
-vite, but in Go.
+A fast (this time, actually) and minimal static site generator.
 
-Works with vite projects. You will have to rework Jinja2 templates to Go
-templates. Look at my site[1] for an example.
 
 INSTALLING
 
@@ -14,6 +12,7 @@ Clone this repository and run
     # make install
 
 Requires `go` to be installed, obviously.
+
 
 USAGE
 
@@ -26,9 +25,52 @@ USAGE
         build           builds the current project
         new PATH        create a new markdown post
 
-NOTES
+
+CONFIGURATION
+
+vite expects a config.yaml file to exist in the project root.  You can
+refer https://git.icyphox.sh/site/tree/config.yaml for an example
+containing all possible keys.
+
+
+TEMPLATING
+
+vite uses Go templating[2], and exposes two structure instances for
+rendering stuff in your template: `Cfg` and `Fm`, defined like so:
+
+    // Cfg
+    struct {
+    	Title        string            `yaml:"title"`
+    	Header       string            `yaml:"header"`
+    	DateFmt      string            `yaml:"datefmt"`
+    	SiteURL      string            `yaml:"siteurl"`
+    	Description  string            `yaml:"description"`
+    	Author       map[string]string `yaml:"author"`
+    	Footer       string            `yaml:"footer"`
+    	Prebuild     []string          `yaml:"prebuild"`
+    	Postbuild    []string          `yaml:"postbuild"`
+    	RSSPrefixURL string            `yaml:"rssprefixurl"`
+    }   
+
+    // Fm
+    struct {
+        Template string
+        URL      string
+        Title    string
+        Subtitle string
+        Date     string
+        Body     string
+    }
+
+For an example, refer https://git.icyphox.sh/site/tree/templates
+
+
+FEEDS
 
 vite generates Atom feeds for all documents under the `pages/blog/`
-directory.
+directory.  I plan to add generation for arbitrary directories, with
+ability to configure the feed file name (defaults to feed.xml right
+now). 
 
 [1]: https://github.com/icyphox/site
+[2]: https://golang.org/pkg/html/template/
