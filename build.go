@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
-	"text/template"
 
 	"github.com/cross-cpm/go-shutil"
 )
