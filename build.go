@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
+	"text/template"
 
 	"github.com/cross-cpm/go-shutil"
 )
@@ -58,7 +58,7 @@ func handleMd(mdPath string) {
 	}
 
 	restContent, fm := parseFrontmatter(content)
-	bodyHtml := mdRender(restContent)
+	bodyHtml := mdRender(restContent, cfg)
 	relPath, _ := filepath.Rel("pages/", mdPath)
 
 	var buildPath string
@@ -126,7 +126,7 @@ func renderIndex(posts []Post) {
 	}
 
 	restContent, fm := parseFrontmatter(content)
-	bodyHtml := mdRender(restContent)
+	bodyHtml := mdRender(restContent, cfg)
 	fm.Body = string(bodyHtml)
 
 	var newFm = NewFm{

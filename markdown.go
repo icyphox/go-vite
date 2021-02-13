@@ -11,12 +11,12 @@ var bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
 	bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
 	bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
 
-func mdRender(input []byte) []byte {
+func mdRender(input []byte, cfg Config) []byte {
 	return bf.Run(
 		input,
 		bf.WithRenderer(
 			bfc.NewRenderer(
-				bfc.Style("bw"),
+				bfc.Style(cfg.Syntax),
 				bfc.Extend(
 					bf.NewHTMLRenderer(bf.HTMLRendererParameters{
 						Flags: bfFlags,

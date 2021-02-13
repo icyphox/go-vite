@@ -8,7 +8,7 @@ import (
 type Config struct {
 	Title        string            `yaml:"title"`
 	Header       string            `yaml:"header"`
-	DateFmt      string            `yaml:datefmt`
+	DateFmt      string            `yaml:"datefmt"`
 	SiteURL      string            `yaml:"siteurl"`
 	Description  string            `yaml:"description"`
 	Author       map[string]string `yaml:"author"`
@@ -16,6 +16,7 @@ type Config struct {
 	Prebuild     []string          `yaml:"prebuild"`
 	Postbuild    []string          `yaml:"postbuild"`
 	RSSPrefixURL string            `yaml:"rssprefixurl"`
+	Syntax       string            `yaml:"syntax"`
 }
 
 func parseConfig() Config {
