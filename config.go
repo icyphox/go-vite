@@ -16,7 +16,6 @@ type Config struct {
 	Prebuild     []string          `yaml:"prebuild"`
 	Postbuild    []string          `yaml:"postbuild"`
 	RSSPrefixURL string            `yaml:"rssprefixurl"`
-	Syntax       string            `yaml:"syntax"`
 }
 
 func parseConfig() Config {

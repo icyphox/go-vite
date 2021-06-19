@@ -16,7 +16,7 @@ func mdRender(input []byte, cfg Config) []byte {
 		input,
 		bf.WithRenderer(
 			bfc.NewRenderer(
-				bfc.Style(cfg.Syntax),
+				bfc.ChromaStyle(Icy),
 				bfc.Extend(
 					bf.NewHTMLRenderer(bf.HTMLRendererParameters{
 						Flags: bfFlags,

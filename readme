@@ -3,11 +3,14 @@ go-vite
 
 A fast (this time, actually) and minimal static site generator.
 
+NOTE: At this point, a lot of this code is heavily tailored towards my
+own site.
+
 
 INSTALLING
 
 Clone this repository and run
-    
+
     $ make
     # make install
 
@@ -50,7 +53,7 @@ rendering stuff in your template: `Cfg` and `Fm`, defined like so:
     	Prebuild     []string          `yaml:"prebuild"`
     	Postbuild    []string          `yaml:"postbuild"`
     	RSSPrefixURL string            `yaml:"rssprefixurl"`
-    }   
+    }
 
     // Fm
     struct {
