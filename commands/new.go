@@ -1,15 +1,14 @@
-package main
+package commands
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
 
-func viteNew(path string) {
+func New(path string) error {
 	_, file := filepath.Split(path)
 	url := strings.TrimSuffix(file, filepath.Ext(file))
 
@@ -23,9 +22,8 @@ date: %s
 
 	_, err := os.Create(path)
 	if err != nil {
-		printErr(err)
-		return
+		return err
 	}
-	ioutil.WriteFile(path, []byte(content), 0644)
-	printMsg("created:", path)
+	os.WriteFile(path, []byte(content), 0644)
+	return nil
 }

@@ -1,4 +1,4 @@
-package main
+package markdown
 
 import (
 	"github.com/alecthomas/chroma"

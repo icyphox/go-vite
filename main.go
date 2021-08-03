@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"git.icyphox.sh/vite/commands"
 )
 
 func main() {
@@ -18,8 +20,6 @@ options:
     new PATH        create a new markdown post
         `
 
-	// TODO: make arg parsing less shit
-
 	if len(args) <= 1 {
 		fmt.Println(helpStr)
 		return
@@ -32,20 +32,27 @@ options:
 			return
 		}
 		initPath := args[2]
-		viteInit(initPath)
-	case "build":
-		_, err := os.Stat("config.yaml")
+		err := commands.Init(initPath)
 		if err != nil {
-			return
+			fmt.Errorf("error: init: %+v\n", err)
 		}
-		viteBuild()
+
+	case "build":
+		err := commands.Build()
+		if err != nil {
+			fmt.Errorf("error: build: %+v\n", err)
+		}
+
 	case "new":
 		if len(args) <= 2 {
 			fmt.Println(helpStr)
 			return
 		}
 		newPath := args[2]
-		viteNew(newPath)
+		err := commands.New(newPath)
+		if err != nil {
+			fmt.Errorf("error: new: %+v\n", err)
+		}
 	}
 
 }
