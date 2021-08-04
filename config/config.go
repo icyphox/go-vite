@@ -24,11 +24,11 @@ var Config ConfigYaml
 func init() {
 	cf, err := os.ReadFile("config.yaml")
 	if err != nil {
-		fmt.Errorf("error: %+v\n", err)
+		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
 		os.Exit(1)
 	}
 	if err = Config.ParseConfig(cf); err != nil {
-		fmt.Errorf("error: %+v\n", err)
+		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
 	}
 }
 

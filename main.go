@@ -34,13 +34,13 @@ options:
 		initPath := args[2]
 		err := commands.Init(initPath)
 		if err != nil {
-			fmt.Errorf("error: init: %+v\n", err)
+			fmt.Fprintf(os.Stderr, "error: init: %+v\n", err)
 		}
 
 	case "build":
 		err := commands.Build()
 		if err != nil {
-			fmt.Errorf("error: build: %+v\n", err)
+			fmt.Fprintf(os.Stderr, "error: build: %+v\n", err)
 		}
 
 	case "new":
@@ -51,7 +51,7 @@ options:
 		newPath := args[2]
 		err := commands.New(newPath)
 		if err != nil {
-			fmt.Errorf("error: new: %+v\n", err)
+			fmt.Fprintf(os.Stderr, "error: new: %+v\n", err)
 		}
 	}
 

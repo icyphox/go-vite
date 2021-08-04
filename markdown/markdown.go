@@ -45,8 +45,8 @@ func (out *Output) RenderMarkdown(source []byte) {
 // Renders out.HTML into dst html file, using the template specified
 // in the frontmatter. data is the template struct.
 func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
-	metaTemplate := out.Meta["template"].(string)
-	if metaTemplate == "" {
+	metaTemplate := out.Meta["template"]
+	if metaTemplate == nil {
 		metaTemplate = "text.html"
 	}
 
@@ -60,7 +60,7 @@ func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 		return err
 	}
 
-	if err = t.ExecuteTemplate(w, metaTemplate, data); err != nil {
+	if err = t.ExecuteTemplate(w, metaTemplate.(string), data); err != nil {
 		return err
 	}
 	return nil
