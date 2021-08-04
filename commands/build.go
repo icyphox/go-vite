@@ -73,7 +73,7 @@ func (pgs *Pages) processFiles() error {
 				TEMPLATES,
 				struct {
 					Cfg  config.ConfigYaml
-					Fm   markdown.Matter
+					Meta markdown.Matter
 					Body string
 				}{config.Config, out.Meta, string(out.HTML)},
 			); err != nil {
@@ -126,7 +126,7 @@ func (pgs *Pages) processDirs() error {
 					TEMPLATES,
 					struct {
 						Cfg  config.ConfigYaml
-						Fm   markdown.Matter
+						Meta markdown.Matter
 						Body string
 					}{config.Config, out.Meta, string(out.HTML)},
 				); err != nil {
@@ -156,7 +156,7 @@ func (pgs *Pages) processDirs() error {
 
 		out.RenderHTML(indexHTML, TEMPLATES, struct {
 			Cfg   config.ConfigYaml
-			Fm    markdown.Matter
+			Meta  markdown.Matter
 			Body  string
 			Posts []markdown.Output
 		}{config.Config, out.Meta, string(out.HTML), posts})
