@@ -1,6 +1,6 @@
 module git.icyphox.sh/vite
 
-go 1.13
+go 1.15
 
 require (
 	github.com/Depado/bfchroma v1.3.0
