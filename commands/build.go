@@ -17,6 +17,7 @@ const (
 	BUILD     = "build"
 	PAGES     = "pages"
 	TEMPLATES = "templates"
+	STATIC    = "static"
 )
 
 type Pages struct {
@@ -180,22 +181,32 @@ func (pgs *Pages) processDirs() error {
 // copies over non .md files, etc.
 func Build() error {
 	pages := Pages{}
-	err := pages.initPages()
-	if err != nil {
+	if err := pages.initPages(); err != nil {
+		return err
+	}
+
+	// Clean the build directory.
+	if err := util.Clean(BUILD); err != nil {
 		return err
 	}
 
 	// Deal with files.
 	// ex: pages/{_index,about,etc}.md
-	err = pages.processFiles()
-	if err != nil {
+	if err := pages.processFiles(); err != nil {
 		return err
 	}
 
 	// Deal with dirs -- i.e. dirs of markdown files.
 	// ex: pages/{blog,travel}/*.md
-	err = pages.processDirs()
-	if err != nil {
+	if err := pages.processDirs(); err != nil {
+		return err
+	}
+
+	// Copy the static directory into build
+	// ex: build/static/
+	buildStatic := filepath.Join(BUILD, STATIC)
+	os.Mkdir(buildStatic, 0755)
+	if err := util.CopyDir(STATIC, buildStatic); err != nil {
 		return err
 	}
 

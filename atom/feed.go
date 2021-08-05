@@ -47,6 +47,7 @@ type AtomFeed struct {
 	Entries  []AtomEntry
 }
 
+// Creates a new Atom feed.
 func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 	entries := []AtomEntry{}
 	config := config.Config
