@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"git.icyphox.sh/vite/atom"
 	"git.icyphox.sh/vite/config"
 	"git.icyphox.sh/vite/markdown"
 	"git.icyphox.sh/vite/util"
@@ -137,8 +138,10 @@ func (pgs *Pages) processDirs() error {
 
 			// Sort posts slice by date
 			sort.Slice(posts, func(i, j int) bool {
-				date1 := posts[j].Meta["date"].(time.Time)
-				date2 := posts[i].Meta["date"].(time.Time)
+				dateStr1 := posts[j].Meta["date"]
+				dateStr2 := posts[i].Meta["date"]
+				date1, _ := time.Parse("2006-01-02", dateStr1)
+				date2, _ := time.Parse("2006-01-02", dateStr2)
 				return date1.Before(date2)
 			})
 		}
@@ -160,6 +163,15 @@ func (pgs *Pages) processDirs() error {
 			Body  string
 			Posts []markdown.Output
 		}{config.Config, out.Meta, string(out.HTML), posts})
+
+		// Create feeds
+		// ex: build/blog/feed.xml
+		xml, err := atom.NewAtomFeed(d, posts)
+		if err != nil {
+			return err
+		}
+		feedFile := filepath.Join(dstDir, "feed.xml")
+		os.WriteFile(feedFile, xml, 0755)
 	}
 	return nil
 }

@@ -14,7 +14,7 @@ func New(path string) error {
 
 	content := fmt.Sprintf(`---
 template:
-url: %s
+slug: %s
 title:
 subtitle:
 date: %s
@@ -24,6 +24,6 @@ date: %s
 	if err != nil {
 		return err
 	}
-	os.WriteFile(path, []byte(content), 0644)
+	os.WriteFile(path, []byte(content), 0755)
 	return nil
 }

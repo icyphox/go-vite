@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Matter map[string]interface{}
+type Matter map[string]string
 
 type MarkdownDoc struct {
 	Frontmatter Matter

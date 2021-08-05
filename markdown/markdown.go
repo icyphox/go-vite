@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
+	"time"
 
 	bfc "github.com/Depado/bfchroma"
 	bf "github.com/russross/blackfriday/v2"
@@ -46,11 +47,16 @@ func (out *Output) RenderMarkdown(source []byte) {
 // in the frontmatter. data is the template struct.
 func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 	metaTemplate := out.Meta["template"]
-	if metaTemplate == nil {
+	if metaTemplate == "" {
 		metaTemplate = "text.html"
 	}
 
-	t, err := template.ParseGlob(filepath.Join(tmplDir, "*.html"))
+	t, err := template.New("").Funcs(template.FuncMap{
+		"parsedate": func(s string) time.Time {
+			date, _ := time.Parse("2006-01-02", s)
+			return date
+		},
+	}).ParseGlob(filepath.Join(tmplDir, "*.html"))
 	if err != nil {
 		return err
 	}
@@ -60,7 +66,7 @@ func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 		return err
 	}
 
-	if err = t.ExecuteTemplate(w, metaTemplate.(string), data); err != nil {
+	if err = t.ExecuteTemplate(w, metaTemplate, data); err != nil {
 		return err
 	}
 	return nil
