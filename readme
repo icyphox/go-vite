@@ -1,25 +1,16 @@
-go-vite
--------
+vite
+----
 
 A fast (this time, actually) and minimal static site generator.
 
-NOTE: At this point, a lot of this code is heavily tailored towards my
-own site.
-
-
 INSTALLING
 
-Clone this repository and run
-
-    $ make
-    # make install
-
-Requires `go` to be installed, obviously.
+    go get git.icyphox.sh/vite
 
 
 USAGE
 
-    vite [options]
+    usage: vite [options]
 
     A simple and minimal static site generator.
 
@@ -29,51 +20,50 @@ USAGE
         new PATH        create a new markdown post
 
 
-CONFIGURATION
+CONFIG
 
-vite expects a config.yaml file to exist in the project root.  You can
-refer https://git.icyphox.sh/site/tree/config.yaml for an example
-containing all possible keys.
+The configuration is unmarshalled from a config.yaml file, into the
+below struct:
+
+    type ConfigYaml struct {
+        Title  string `yaml:"title"`
+        Desc   string `yaml:"description"`
+        Author struct {
+            Name  string `yaml:"name"`
+            Email string `yaml:"email"`
+        } `yaml:"author"`
+        URL string `yaml:"url"`
+    }
+
+Example config: https://git.icyphox.sh/site/tree/config.yaml
 
 
 TEMPLATING
 
-vite uses Go templating[2], and exposes two structure instances for
-rendering stuff in your template: `Cfg` and `Fm`, defined like so:
+Non-index templates have access to the below objects:
+· Cfg: object of ConfigYaml
+· Meta: map[string]string of the page's frontmatter metadata
+· Body: Contains the HTML
 
-    // Cfg
-    struct {
-    	Title        string            `yaml:"title"`
-    	Header       string            `yaml:"header"`
-    	DateFmt      string            `yaml:"datefmt"`
-    	SiteURL      string            `yaml:"siteurl"`
-    	Description  string            `yaml:"description"`
-    	Author       map[string]string `yaml:"author"`
-    	Footer       string            `yaml:"footer"`
-    	Prebuild     []string          `yaml:"prebuild"`
-    	Postbuild    []string          `yaml:"postbuild"`
-    	RSSPrefixURL string            `yaml:"rssprefixurl"`
-    }
+Index templates have access to everything above, and a Posts object,
+which is a slice containing HTML and Meta. This is useful for iterating
+through to generate an index page.
+Example: https://git.icyphox.sh/site/tree/templates/index.html
 
-    // Fm
-    struct {
-        Template string
-        URL      string
-        Title    string
-        Subtitle string
-        Date     string
-        Body     string
-    }
-
-For an example, refer https://git.icyphox.sh/site/tree/templates
+More templating examples can be found at:
+https://git.icyphox.sh/site/tree/templates
 
 
-FEEDS
+FILE TREE
 
-vite generates Atom feeds for all documents under the `pages/blog/`
-directory.  I plan to add generation for arbitrary directories, with
-ability to configure the feed file name (defaults to feed.xml right
-now). 
+    .
+    ├── build/
+    ├── config.yaml
+    ├── pages/
+    ├── static/
+    └── templates/
 
-[1]: https://github.com/icyphox/site
-[2]: https://golang.org/pkg/html/template/
+The entire 'static/' directory gets copied over to 'build/', and can be
+used to reference static assets -- css, images, etc. 'pages/' supports
+only nesting one directory deep; for example: 'pages/blog/*.md' will
+render, but 'pages/blog/foo/*.md' will not.
