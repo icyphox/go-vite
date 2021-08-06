@@ -2,6 +2,7 @@ package atom
 
 import (
 	"encoding/xml"
+	"path/filepath"
 	"time"
 
 	"git.icyphox.sh/vite/config"
@@ -63,7 +64,7 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 			Title:   p.Meta["title"],
 			Updated: rfc3339,
 			ID:      NewUUID().String(),
-			Link:    &AtomLink{Href: config.URL + srcDir + p.Meta["slug"]},
+			Link:    &AtomLink{Href: filepath.Join(config.URL, srcDir, p.Meta["slug"])},
 			Summary: &AtomSummary{Content: string(p.HTML), Type: "html"},
 		}
 		entries = append(entries, entry)
