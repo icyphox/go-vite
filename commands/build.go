@@ -83,7 +83,10 @@ func (pgs *Pages) processFiles() error {
 			}
 		} else {
 			src := filepath.Join(PAGES, f)
-			util.CopyFile(src, BUILD)
+			dst := filepath.Join(BUILD, f)
+			if err := util.CopyFile(src, dst); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
