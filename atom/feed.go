@@ -2,6 +2,7 @@ package atom
 
 import (
 	"encoding/xml"
+	"fmt"
 	"path/filepath"
 	"time"
 
@@ -63,7 +64,12 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 		entry := AtomEntry{
 			Title:   p.Meta["title"],
 			Updated: rfc3339,
-			ID:      NewUUID().String(),
+			ID: fmt.Sprintf(
+				"tag:%s,%s:%s",
+				config.URL,
+				dateStr,
+				filepath.Join(srcDir, p.Meta["slug"]),
+			),
 			Link:    &AtomLink{Href: filepath.Join(config.URL, srcDir, p.Meta["slug"])},
 			Summary: &AtomSummary{Content: string(p.HTML), Type: "html"},
 		}
