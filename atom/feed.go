@@ -64,9 +64,10 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 		entry := AtomEntry{
 			Title:   p.Meta["title"],
 			Updated: rfc3339,
+			// tag:icyphox.sh,2019-10-23:blog/some-post/
 			ID: fmt.Sprintf(
 				"tag:%s,%s:%s",
-				config.URL,
+				config.URL[8:], // strip https://
 				dateStr,
 				filepath.Join(srcDir, p.Meta["slug"]),
 			),
