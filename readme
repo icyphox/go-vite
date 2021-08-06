@@ -54,6 +54,12 @@ More templating examples can be found at:
 https://git.icyphox.sh/site/tree/templates
 
 
+FEEDS
+
+Atom feeds are generated for all directories under 'pages/'. So
+'pages/foo' will have a Atom feed at 'build/foo/feed.xml'.
+
+
 FILE TREE
 
     .
