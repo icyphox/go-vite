@@ -18,6 +18,6 @@ func Init(path string) error {
 		}
 	}
 	fp, _ := filepath.Abs(path)
-	fmt.Printf("vite: created project at %q\n", fp)
+	fmt.Printf("vite: created project at %s\n", fp)
 	return nil
 }

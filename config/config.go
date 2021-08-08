@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -19,20 +18,13 @@ type ConfigYaml struct {
 	//	Postbuild []string `yaml:"postbuild"`
 }
 
-var Config ConfigYaml
-
-func init() {
+func (c *ConfigYaml) ParseConfig() error {
 	cf, err := os.ReadFile("config.yaml")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
-		os.Exit(1)
+		return err
 	}
-	if err = Config.ParseConfig(cf); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
+	if err = yaml.Unmarshal(cf, c); err != nil {
+		return err
 	}
-}
-
-func (c *ConfigYaml) ParseConfig(cf []byte) error {
-	err := yaml.Unmarshal(cf, c)
-	return err
+	return nil
 }

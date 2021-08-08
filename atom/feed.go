@@ -52,7 +52,8 @@ type AtomFeed struct {
 // Creates a new Atom feed.
 func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 	entries := []AtomEntry{}
-	config := config.Config
+	cfg := config.ConfigYaml{}
+	cfg.ParseConfig()
 	for _, p := range posts {
 		dateStr := p.Meta["date"]
 		date, err := time.Parse("2006-01-02", dateStr)
@@ -67,11 +68,11 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 			// tag:icyphox.sh,2019-10-23:blog/some-post/
 			ID: fmt.Sprintf(
 				"tag:%s,%s:%s",
-				config.URL[8:], // strip https://
+				cfg.URL[8:], // strip https://
 				dateStr,
 				filepath.Join(srcDir, p.Meta["slug"]),
 			),
-			Link:    &AtomLink{Href: filepath.Join(config.URL, srcDir, p.Meta["slug"])},
+			Link:    &AtomLink{Href: filepath.Join(cfg.URL, srcDir, p.Meta["slug"])},
 			Summary: &AtomSummary{Content: string(p.HTML), Type: "html"},
 		}
 		entries = append(entries, entry)
@@ -81,13 +82,13 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 	now := time.Now().Format(time.RFC3339)
 	feed := &AtomFeed{
 		Xmlns:    "http://www.w3.org/2005/Atom",
-		Title:    config.Title,
-		ID:       config.URL,
-		Subtitle: config.Desc,
-		Link:     &AtomLink{Href: config.URL},
+		Title:    cfg.Title,
+		ID:       cfg.URL,
+		Subtitle: cfg.Desc,
+		Link:     &AtomLink{Href: cfg.URL},
 		Author: &AtomAuthor{
-			Name:  config.Author.Name,
-			Email: config.Author.Email,
+			Name:  cfg.Author.Name,
+			Email: cfg.Author.Email,
 		},
 		Updated: now,
 		Entries: entries,
