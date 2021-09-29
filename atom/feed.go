@@ -72,7 +72,8 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 				dateStr,
 				filepath.Join(srcDir, p.Meta["slug"]),
 			),
-			Link: &AtomLink{Href: filepath.Join(cfg.URL, srcDir, p.Meta["slug"])},
+			// filepath.Join strips the second / in http://
+			Link: &AtomLink{Href: cfg.URL + filepath.Join(srcDir, p.Meta["slug"])},
 			Summary: &AtomSummary{
 				Content: fmt.Sprintf("<h2>%s</h2>\n%s",
 					p.Meta["subtitle"],
