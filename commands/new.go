@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -20,11 +21,16 @@ subtitle:
 date: %s
 ---`, url, time.Now().Format("2006-01-02"))
 
-	_, err := os.Create(path)
-	if err != nil {
-		return err
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		_, err := os.Create(path)
+		if err != nil {
+			return err
+		}
+		os.WriteFile(path, []byte(content), 0755)
+		fmt.Printf("vite: created new post at %s\n", path)
+		return nil
 	}
-	os.WriteFile(path, []byte(content), 0755)
-	fmt.Printf("vite: created new post at %s\n", path)
+
+	fmt.Printf("error: %s already exists\n", path)
 	return nil
 }
