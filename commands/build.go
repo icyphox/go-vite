@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"git.icyphox.sh/vite/atom"
@@ -195,6 +197,7 @@ func (pgs *Pages) processDirs() error {
 // Core builder function. Converts markdown to html,
 // copies over non .md files, etc.
 func Build() error {
+	fmt.Print("vite: building... ")
 	pages := Pages{}
 	if err := pages.initPages(); err != nil {
 		return err
@@ -205,15 +208,42 @@ func Build() error {
 		return err
 	}
 
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	wgDone := make(chan bool)
+
+	ec := make(chan error)
+
 	// Deal with files.
 	// ex: pages/{_index,about,etc}.md
-	if err := pages.processFiles(); err != nil {
-		return err
-	}
+	go func() {
+		err := pages.processFiles()
+		if err != nil {
+			ec <- err
+		}
+		wg.Done()
+	}()
 
 	// Deal with dirs -- i.e. dirs of markdown files.
 	// ex: pages/{blog,travel}/*.md
-	if err := pages.processDirs(); err != nil {
+	go func() {
+		err := pages.processDirs()
+		if err != nil {
+			ec <- err
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		wg.Wait()
+		close(wgDone)
+	}()
+
+	select {
+	case <-wgDone:
+		break
+	case err := <-ec:
+		close(ec)
 		return err
 	}
 
@@ -225,5 +255,6 @@ func Build() error {
 		return err
 	}
 
+	fmt.Print("done\n")
 	return nil
 }
