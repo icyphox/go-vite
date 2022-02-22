@@ -5,7 +5,7 @@ A fast (this time, actually) and minimal static site generator.
 
 INSTALLING
 
-    go get git.icyphox.sh/vite
+    go install git.icyphox.sh/vite@latest
 
 
 USAGE
@@ -41,14 +41,30 @@ Example config: https://git.icyphox.sh/site/tree/config.yaml
 TEMPLATING
 
 Non-index templates have access to the below objects:
-· Cfg: object of ConfigYaml
-· Meta: map[string]string of the page's frontmatter metadata
-· Body: Contains the HTML
+• Cfg: object of ConfigYaml
+• Meta: map[string]string of the page's frontmatter metadata
+• Body: Contains the HTML
 
 Index templates have access to everything above, and a Posts object,
 which is a slice containing HTML and Meta. This is useful for iterating
 through to generate an index page.
 Example: https://git.icyphox.sh/site/tree/templates/index.html
+
+Templates are written as standard Go templates (ref:
+https://godocs.io/text/template), and can be loaded recursively.
+Consider the below template structure:
+
+    templates/
+    |-- blog.html
+    |-- index.html
+    |-- project/
+        |-- index.html
+        `-- project.html
+
+The templates under 'project/' are referenced as 'project/index.html'.
+This deserves mention because Go templates don't recurse into
+subdirectories by default (template.ParseGlob uses filepath.Glob, and
+doesn't support deep-matching, i.e. '**').
 
 More templating examples can be found at:
 https://git.icyphox.sh/site/tree/templates
@@ -63,11 +79,11 @@ Atom feeds are generated for all directories under 'pages/'. So
 FILE TREE
 
     .
-    ├── build/
-    ├── config.yaml
-    ├── pages/
-    ├── static/
-    └── templates/
+    |-- build/
+    |-- config.yaml
+    |-- pages/
+    |-- static/
+    |-- templates/
 
 The entire 'static/' directory gets copied over to 'build/', and can be
 used to reference static assets -- css, images, etc. 'pages/' supports

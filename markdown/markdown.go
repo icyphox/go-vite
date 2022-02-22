@@ -2,9 +2,10 @@ package markdown
 
 import (
 	"os"
-	"path/filepath"
-	"text/template"
+	gotmpl "text/template"
 	"time"
+
+	"git.icyphox.sh/vite/markdown/template"
 
 	bfc "github.com/Depado/bfchroma"
 	bf "github.com/russross/blackfriday/v2"
@@ -51,13 +52,14 @@ func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 		metaTemplate = "text.html"
 	}
 
-	t, err := template.New("").Funcs(template.FuncMap{
+	tmpl := template.NewTmpl()
+	tmpl.SetFuncs(gotmpl.FuncMap{
 		"parsedate": func(s string) time.Time {
 			date, _ := time.Parse("2006-01-02", s)
 			return date
 		},
-	}).ParseGlob(filepath.Join(tmplDir, "*.html"))
-	if err != nil {
+	})
+	if err := tmpl.Load(tmplDir); err != nil {
 		return err
 	}
 
@@ -66,7 +68,7 @@ func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 		return err
 	}
 
-	if err = t.ExecuteTemplate(w, metaTemplate, data); err != nil {
+	if err = tmpl.ExecuteTemplate(w, metaTemplate, data); err != nil {
 		return err
 	}
 	return nil
