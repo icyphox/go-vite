@@ -26,9 +26,10 @@ The configuration is unmarshalled from a config.yaml file, into the
 below struct:
 
     type ConfigYaml struct {
-        Title  string `yaml:"title"`
-        Desc   string `yaml:"description"`
-        Author struct {
+        Title           string `yaml:"title"`
+        Desc            string `yaml:"description"`
+        DefaultTemplate string `yaml:"default-template"`
+        Author          struct {
             Name  string `yaml:"name"`
             Email string `yaml:"email"`
         } `yaml:"author"`

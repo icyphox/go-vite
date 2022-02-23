@@ -72,10 +72,6 @@ func (pgs *Pages) processFiles() error {
 
 			out := markdown.Output{}
 			out.RenderMarkdown(fb)
-			cfg := config.ConfigYaml{}
-			if err := cfg.ParseConfig(); err != nil {
-				return err
-			}
 			if err = out.RenderHTML(
 				htmlFile,
 				TEMPLATES,
@@ -83,7 +79,7 @@ func (pgs *Pages) processFiles() error {
 					Cfg  config.ConfigYaml
 					Meta markdown.Matter
 					Body string
-				}{cfg, out.Meta, string(out.HTML)},
+				}{config.Config, out.Meta, string(out.HTML)},
 			); err != nil {
 				return err
 			}
@@ -131,11 +127,6 @@ func (pgs *Pages) processDirs() error {
 
 				out := markdown.Output{}
 				out.RenderMarkdown(fb)
-				cfg := config.ConfigYaml{}
-				if err := cfg.ParseConfig(); err != nil {
-					return err
-				}
-
 				if err = out.RenderHTML(
 					htmlFile,
 					TEMPLATES,
@@ -143,7 +134,7 @@ func (pgs *Pages) processDirs() error {
 						Cfg  config.ConfigYaml
 						Meta markdown.Matter
 						Body string
-					}{cfg, out.Meta, string(out.HTML)},
+					}{config.Config, out.Meta, string(out.HTML)},
 				); err != nil {
 					return err
 				}
@@ -170,17 +161,13 @@ func (pgs *Pages) processDirs() error {
 		}
 		out := markdown.Output{}
 		out.RenderMarkdown(indexMd)
-		cfg := config.ConfigYaml{}
-		if err := cfg.ParseConfig(); err != nil {
-			return err
-		}
 
 		out.RenderHTML(indexHTML, TEMPLATES, struct {
 			Cfg   config.ConfigYaml
 			Meta  markdown.Matter
 			Body  string
 			Posts []markdown.Output
-		}{cfg, out.Meta, string(out.HTML), posts})
+		}{config.Config, out.Meta, string(out.HTML), posts})
 
 		// Create feeds
 		// ex: build/blog/feed.xml

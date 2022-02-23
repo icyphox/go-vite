@@ -5,6 +5,7 @@ import (
 	gotmpl "text/template"
 	"time"
 
+	"git.icyphox.sh/vite/config"
 	"git.icyphox.sh/vite/markdown/template"
 
 	bfc "github.com/Depado/bfchroma"
@@ -49,7 +50,7 @@ func (out *Output) RenderMarkdown(source []byte) {
 func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 	metaTemplate := out.Meta["template"]
 	if metaTemplate == "" {
-		metaTemplate = "text.html"
+		metaTemplate = config.Config.DefaultTemplate
 	}
 
 	tmpl := template.NewTmpl()
