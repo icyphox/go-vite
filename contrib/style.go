@@ -1,10 +1,15 @@
-package markdown
+// style.go: generate chroma css
+// go run contrib/style.go > syntax.css
+package main
 
 import (
+	"os"
+
 	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/formatters/html"
 )
 
-var Icy = chroma.MustNewStyle("icy", chroma.StyleEntries{
+var syntax = chroma.MustNewStyle("syntax", chroma.StyleEntries{
 	chroma.CommentMultiline:     "italic #999988",
 	chroma.CommentPreproc:       "bold #999999",
 	chroma.CommentSingle:        "italic #999988",
@@ -30,11 +35,11 @@ var Icy = chroma.MustNewStyle("icy", chroma.StyleEntries{
 	chroma.LiteralString:        "#509c93",
 	chroma.NameAttribute:        "#008080",
 	chroma.NameBuiltinPseudo:    "#999999",
-	chroma.NameBuiltin:          "#0086B3",
+	chroma.NameBuiltin:          "#509c93",
 	chroma.NameClass:            "bold #666666",
 	chroma.NameConstant:         "#008080",
 	chroma.NameDecorator:        "bold #3c5d5d",
-	chroma.NameEntity:           "#800080",
+	chroma.NameEntity:           "#509c93",
 	chroma.NameException:        "bold #444444",
 	chroma.NameFunction:         "bold #444444",
 	chroma.NameLabel:            "bold #444444",
@@ -48,3 +53,8 @@ var Icy = chroma.MustNewStyle("icy", chroma.StyleEntries{
 	chroma.TextWhitespace:       "#bbbbbb",
 	chroma.Background:           " bg:#ffffff",
 })
+
+func main() {
+	formatter := html.New(html.WithClasses(true))
+	formatter.WriteCSS(os.Stdout, syntax)
+}

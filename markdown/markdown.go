@@ -9,14 +9,17 @@ import (
 	"git.icyphox.sh/vite/markdown/template"
 
 	bfc "github.com/Depado/bfchroma"
+	"github.com/alecthomas/chroma/formatters/html"
 	bf "github.com/russross/blackfriday/v2"
 )
 
-var bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
-	bf.SmartypantsDashes | bf.NofollowLinks
-var bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
-	bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
-	bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
+var (
+	bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
+		bf.SmartypantsDashes | bf.NofollowLinks
+	bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
+		bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
+		bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
+)
 
 type Output struct {
 	HTML []byte
@@ -32,7 +35,10 @@ func (out *Output) RenderMarkdown(source []byte) {
 		md.Body,
 		bf.WithRenderer(
 			bfc.NewRenderer(
-				bfc.ChromaStyle(Icy),
+				bfc.ChromaOptions(
+					html.TabWidth(4),
+					html.WithClasses(true),
+				),
 				bfc.Extend(
 					bf.NewHTMLRenderer(bf.HTMLRendererParameters{
 						Flags: bfFlags,

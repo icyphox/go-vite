@@ -39,6 +39,16 @@ below struct:
 Example config: https://git.icyphox.sh/site/tree/config.yaml
 
 
+SYNTAX HIGHLIGHTING
+
+vite uses chroma (https://github.com/alecthomas/chroma) for syntax
+highlighting. Note that CSS is not provided, and will have to be
+included by the user in the templates. A sample style can be generated
+by running:
+
+    go run contrib/style.go > syntax.css
+
+
 TEMPLATING
 
 Non-index templates have access to the below objects:
@@ -62,10 +72,10 @@ Consider the below template structure:
         |-- index.html
         `-- project.html
 
-The templates under 'project/' are referenced as 'project/index.html'.
+The templates under project/ are referenced as project/index.html.
 This deserves mention because Go templates don't recurse into
 subdirectories by default (template.ParseGlob uses filepath.Glob, and
-doesn't support deep-matching, i.e. '**').
+doesn't support deep-matching, i.e. **).
 
 More templating examples can be found at:
 https://git.icyphox.sh/site/tree/templates
@@ -73,8 +83,8 @@ https://git.icyphox.sh/site/tree/templates
 
 FEEDS
 
-Atom feeds are generated for all directories under 'pages/'. So
-'pages/foo' will have a Atom feed at 'build/foo/feed.xml'.
+Atom feeds are generated for all directories under pages/. So
+pages/foo will have a Atom feed at build/foo/feed.xml.
 
 
 FILE TREE
@@ -86,7 +96,7 @@ FILE TREE
     |-- static/
     |-- templates/
 
-The entire 'static/' directory gets copied over to 'build/', and can be
-used to reference static assets -- css, images, etc. 'pages/' supports
-only nesting one directory deep; for example: 'pages/blog/*.md' will
-render, but 'pages/blog/foo/*.md' will not.
+The entire static/ directory gets copied over to build/, and can be
+used to reference static assets -- css, images, etc. pages/ supports
+only nesting one directory deep; for example: pages/blog/*.md will
+render, but pages/blog/foo/*.md will not.
