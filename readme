@@ -15,9 +15,10 @@ USAGE
     A simple and minimal static site generator.
 
     options:
-        init PATH       create vite project at PATH
-        build           builds the current project
-        new PATH        create a new markdown post
+        init PATH                   create vite project at PATH
+        build                       builds the current project
+        new PATH                    create a new markdown post
+        serve [HOST:PORT]           serves the 'build' directory
 
 
 CONFIG
