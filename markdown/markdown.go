@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"fmt"
 	"os"
 	gotmpl "text/template"
 	"time"
@@ -14,11 +15,8 @@ import (
 )
 
 var (
-	bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
-		bf.SmartypantsDashes | bf.NofollowLinks
-	bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
-		bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
-		bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
+	bfFlags = bf.CommonHTMLFlags | bf.FootnoteReturnLinks | bf.SmartypantsFractions
+	bfExts  = bf.CommonExtensions | bf.AutoHeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
 )
 
 type Output struct {
@@ -27,9 +25,11 @@ type Output struct {
 }
 
 // Renders markdown to html, and fetches metadata.
-func (out *Output) RenderMarkdown(source []byte) {
+func (out *Output) RenderMarkdown(source []byte) error {
 	md := MarkdownDoc{}
-	md.Extract(source)
+	if err := md.Extract(source); err != nil {
+		return fmt.Errorf("markdown: %w", err)
+	}
 
 	out.HTML = bf.Run(
 		md.Body,
@@ -49,6 +49,7 @@ func (out *Output) RenderMarkdown(source []byte) {
 		bf.WithExtensions(bfExts),
 	)
 	out.Meta = md.Frontmatter
+	return nil
 }
 
 // Renders out.HTML into dst html file, using the template specified

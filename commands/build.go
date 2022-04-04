@@ -71,7 +71,9 @@ func (pgs *Pages) processFiles() error {
 			}
 
 			out := markdown.Output{}
-			out.RenderMarkdown(fb)
+			if err = out.RenderMarkdown(fb); err != nil {
+				return err
+			}
 			if err = out.RenderHTML(
 				htmlFile,
 				TEMPLATES,
@@ -126,7 +128,9 @@ func (pgs *Pages) processDirs() error {
 				}
 
 				out := markdown.Output{}
-				out.RenderMarkdown(fb)
+				if err := out.RenderMarkdown(fb); err != nil {
+					return err
+				}
 				if err = out.RenderHTML(
 					htmlFile,
 					TEMPLATES,
@@ -160,7 +164,9 @@ func (pgs *Pages) processDirs() error {
 			return err
 		}
 		out := markdown.Output{}
-		out.RenderMarkdown(indexMd)
+		if err := out.RenderMarkdown(indexMd); err != nil {
+			return err
+		}
 
 		out.RenderHTML(indexHTML, TEMPLATES, struct {
 			Cfg   config.ConfigYaml
