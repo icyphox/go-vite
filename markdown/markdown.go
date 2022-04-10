@@ -15,8 +15,11 @@ import (
 )
 
 var (
-	bfFlags = bf.CommonHTMLFlags | bf.FootnoteReturnLinks | bf.SmartypantsFractions
-	bfExts  = bf.CommonExtensions | bf.AutoHeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
+	bfFlags = bf.UseXHTML | bf.Smartypants | bf.SmartypantsFractions |
+		bf.SmartypantsDashes | bf.NofollowLinks | bf.FootnoteReturnLinks
+	bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
+		bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
+		bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
 )
 
 type Output struct {
@@ -33,6 +36,7 @@ func (out *Output) RenderMarkdown(source []byte) error {
 
 	out.HTML = bf.Run(
 		md.Body,
+		bf.WithNoExtensions(),
 		bf.WithRenderer(
 			bfc.NewRenderer(
 				bfc.ChromaOptions(
