@@ -2,7 +2,9 @@ module git.icyphox.sh/vite
 
 go 1.15
 
-replace github.com/russross/blackfriday/v2 => git.icyphox.sh/grayfriday v0.0.0-20220619163728-f1d36e6d67c6
+replace github.com/russross/blackfriday/v2 => git.icyphox.sh/grayfriday v0.0.0-20220701120222-4170cc12d471
+
+// replace github.com/russross/blackfriday/v2 => ../grayfriday
 
 require (
 	github.com/Depado/bfchroma v1.3.0
