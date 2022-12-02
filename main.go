@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"git.icyphox.sh/vite/commands"
+	"icyphox.sh/vite/commands"
 )
 
 func main() {

@@ -6,12 +6,10 @@ import (
 	gotmpl "text/template"
 	"time"
 
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/markdown/template"
+	"icyphox.sh/vite/config"
+	"icyphox.sh/vite/markdown/template"
 
-	bfc "github.com/Depado/bfchroma"
-	"github.com/alecthomas/chroma/formatters/html"
-	bf "github.com/russross/blackfriday/v2"
+	bf "icyphox.sh/grayfriday"
 )
 
 var (
@@ -37,19 +35,7 @@ func (out *Output) RenderMarkdown(source []byte) error {
 	out.HTML = bf.Run(
 		md.Body,
 		bf.WithNoExtensions(),
-		bf.WithRenderer(
-			bfc.NewRenderer(
-				bfc.ChromaOptions(
-					html.TabWidth(4),
-					html.WithClasses(true),
-				),
-				bfc.Extend(
-					bf.NewHTMLRenderer(bf.HTMLRendererParameters{
-						Flags: bfFlags,
-					}),
-				),
-			),
-		),
+		bf.WithRenderer(bf.NewHTMLRenderer(bf.HTMLRendererParameters{Flags: bfFlags})),
 		bf.WithExtensions(bfExts),
 	)
 	out.Meta = md.Frontmatter
