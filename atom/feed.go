@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"icyphox.sh/vite/config"
-	"icyphox.sh/vite/markdown"
+	"git.icyphox.sh/vite/config"
+	"git.icyphox.sh/vite/markdown"
 )
 
 type AtomLink struct {

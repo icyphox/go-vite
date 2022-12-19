@@ -6,10 +6,10 @@ import (
 	gotmpl "text/template"
 	"time"
 
-	"icyphox.sh/vite/config"
-	"icyphox.sh/vite/markdown/template"
+	"git.icyphox.sh/vite/config"
+	"git.icyphox.sh/vite/markdown/template"
 
-	bf "icyphox.sh/grayfriday"
+	bf "git.icyphox.sh/grayfriday"
 )
 
 var (

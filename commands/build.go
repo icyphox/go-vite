@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
-	"icyphox.sh/vite/atom"
-	"icyphox.sh/vite/config"
-	"icyphox.sh/vite/markdown"
-	"icyphox.sh/vite/util"
+	"git.icyphox.sh/vite/atom"
+	"git.icyphox.sh/vite/config"
+	"git.icyphox.sh/vite/markdown"
+	"git.icyphox.sh/vite/util"
 )
 
 const (

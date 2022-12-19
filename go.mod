@@ -1,4 +1,4 @@
-module icyphox.sh/vite
+module git.icyphox.sh/vite
 
 go 1.15
 
