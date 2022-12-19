@@ -3,6 +3,7 @@ module git.icyphox.sh/vite
 go 1.15
 
 require (
+	git.icyphox.sh/grayfriday v0.0.0-20221126034429-23c704183914 // indirect
 	github.com/adrg/frontmatter v0.2.0
 	github.com/alecthomas/chroma v0.10.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
