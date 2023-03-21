@@ -17,7 +17,7 @@ var (
 		bf.SmartypantsDashes | bf.NofollowLinks | bf.FootnoteReturnLinks
 	bfExts = bf.NoIntraEmphasis | bf.Tables | bf.FencedCode | bf.Autolink |
 		bf.Strikethrough | bf.SpaceHeadings | bf.BackslashLineBreak |
-		bf.AutoHeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
+		bf.AutoHeadingIDs | bf.HeadingIDs | bf.Footnotes | bf.NoEmptyLineBeforeBlock
 )
 
 type Output struct {
