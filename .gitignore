@@ -2,3 +2,5 @@ vite
 .env
 .direnv
 result
+vendor/
+out/

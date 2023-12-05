@@ -1,9 +1,9 @@
-// style.go: generate chroma css
-// go run contrib/style.go > syntax.css
-package main
+// style.go: generate css
+package style
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/alecthomas/chroma"
 	"github.com/alecthomas/chroma/formatters/html"
@@ -54,7 +54,18 @@ var syntax = chroma.MustNewStyle("syntax", chroma.StyleEntries{
 	chroma.Background:           " bg:#ffffff",
 })
 
-func main() {
+func GenerateStyleFiles() error {
+	// generate syntax.css
 	formatter := html.New(html.WithClasses(true))
-	formatter.WriteCSS(os.Stdout, syntax)
+	syntaxStyleFilePath := filepath.Join("static", "syntax.css")
+	syntaxStyleFile, err := os.Create(syntaxStyleFilePath)
+	if err != nil {
+		return err
+	}
+	defer syntaxStyleFile.Close()
+	if err = formatter.WriteCSS(syntaxStyleFile, syntax); err != nil {
+		return err
+	}
+
+	return nil
 }

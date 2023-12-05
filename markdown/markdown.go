@@ -3,11 +3,13 @@ package markdown
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 	gotmpl "text/template"
 	"time"
 
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/markdown/template"
+	"github.com/toozej/go-vite/config"
+	"github.com/toozej/go-vite/markdown/template"
 
 	bf "git.icyphox.sh/grayfriday"
 )
@@ -55,6 +57,12 @@ func (out *Output) RenderHTML(dst, tmplDir string, data interface{}) error {
 		"parsedate": func(s string) time.Time {
 			date, _ := time.Parse("2006-01-02", s)
 			return date
+		},
+		"splitcsv": func(s string) []string {
+			return strings.Split(s, ",")
+		},
+		"stripext": func(s string) string {
+			return filepath.Base(s[:len(s)-len(filepath.Ext(s))])
 		},
 	})
 	if err := tmpl.Load(tmplDir); err != nil {

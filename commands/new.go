@@ -26,7 +26,10 @@ date: %s
 		if err != nil {
 			return err
 		}
-		os.WriteFile(path, []byte(content), 0755)
+		err = os.WriteFile(path, []byte(content), 0755)
+		if err != nil {
+			return err
+		}
 		fmt.Printf("vite: created new post at %s\n", path)
 		return nil
 	}

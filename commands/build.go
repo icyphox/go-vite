@@ -9,10 +9,11 @@ import (
 	"sync"
 	"time"
 
-	"git.icyphox.sh/vite/atom"
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/markdown"
-	"git.icyphox.sh/vite/util"
+	"github.com/toozej/go-vite/atom"
+	"github.com/toozej/go-vite/config"
+	"github.com/toozej/go-vite/markdown"
+	"github.com/toozej/go-vite/style"
+	"github.com/toozej/go-vite/util"
 )
 
 const (
@@ -61,7 +62,10 @@ func (pgs *Pages) processFiles() error {
 					strings.TrimSuffix(f, ".md"),
 				)
 			}
-			os.Mkdir(htmlDir, 0755)
+			err := os.MkdirAll(htmlDir, 0755)
+			if err != nil {
+				return err
+			}
 			// ex: build/about/index.html
 			htmlFile := filepath.Join(htmlDir, "index.html")
 
@@ -102,7 +106,10 @@ func (pgs *Pages) processDirs() error {
 		dstDir := filepath.Join(BUILD, d)
 		// ex: pages/blog
 		srcDir := filepath.Join(PAGES, d)
-		os.Mkdir(dstDir, 0755)
+		err := os.MkdirAll(dstDir, 0755)
+		if err != nil {
+			return err
+		}
 
 		entries, err := os.ReadDir(srcDir)
 		if err != nil {
@@ -116,7 +123,10 @@ func (pgs *Pages) processDirs() error {
 			slug := strings.TrimSuffix(e.Name(), filepath.Ext(e.Name()))
 
 			// ex: build/blog/foo-bar/
-			os.Mkdir(filepath.Join(dstDir, slug), 0755)
+			err := os.MkdirAll(filepath.Join(dstDir, slug), 0755)
+			if err != nil {
+				return err
+			}
 			// ex: build/blog/foo-bar/index.html
 			htmlFile := filepath.Join(dstDir, slug, "index.html")
 
@@ -168,12 +178,15 @@ func (pgs *Pages) processDirs() error {
 			return err
 		}
 
-		out.RenderHTML(indexHTML, TEMPLATES, struct {
+		err = out.RenderHTML(indexHTML, TEMPLATES, struct {
 			Cfg   config.ConfigYaml
 			Meta  markdown.Matter
 			Body  string
 			Posts []markdown.Output
 		}{config.Config, out.Meta, string(out.HTML), posts})
+		if err != nil {
+			return err
+		}
 
 		// Create feeds
 		// ex: build/blog/feed.xml
@@ -182,7 +195,17 @@ func (pgs *Pages) processDirs() error {
 			return err
 		}
 		feedFile := filepath.Join(dstDir, "feed.xml")
-		os.WriteFile(feedFile, xml, 0755)
+		err = os.WriteFile(feedFile, xml, 0755)
+		if err != nil {
+			return err
+		}
+
+		// Create style files
+		// ex: build/static/style.css
+		err = style.GenerateStyleFiles()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -243,8 +266,11 @@ func Build() error {
 	// Copy the static directory into build
 	// ex: build/static/
 	buildStatic := filepath.Join(BUILD, STATIC)
-	os.Mkdir(buildStatic, 0755)
-	if err := util.CopyDir(STATIC, buildStatic); err != nil {
+	err := os.MkdirAll(buildStatic, 0755)
+	if err != nil {
+		return err
+	}
+	if err = util.CopyDir(STATIC, buildStatic); err != nil {
 		return err
 	}
 

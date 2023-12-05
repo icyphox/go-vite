@@ -1,11 +1,11 @@
 vite
 ----
 
-A fast (this time, actually) and minimal static site generator.
+A fast (this time, actually) and minimal static site generator forked from https://git.icyphox.sh/vite to provide additional functionality.
 
 INSTALLING
 
-    go install icyphox.sh/vite@latest
+    go install github.com/toozej/go-vite@latest
 
 
 USAGE
@@ -44,10 +44,7 @@ SYNTAX HIGHLIGHTING
 
 vite uses chroma (https://github.com/alecthomas/chroma) for syntax
 highlighting. Note that CSS is not provided, and will have to be
-included by the user in the templates. A sample style can be generated
-by running:
-
-    go run contrib/style.go > syntax.css
+included by the user in the templates.
 
 
 TEMPLATING
