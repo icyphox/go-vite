@@ -5,7 +5,7 @@ A fast (this time, actually) and minimal static site generator.
 
 INSTALLING
 
-    go install icyphox.sh/vite@latest
+    go install git.icyphox.sh/vite@latest
 
 
 USAGE
