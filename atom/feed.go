@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"git.icyphox.sh/vite/config"
@@ -28,11 +29,17 @@ type AtomAuthor struct {
 	Email   string   `xml:"email"`
 }
 
+type AtomTitle struct {
+	XMLName xml.Name `xml:"title"`
+	Title   string   `xml:",chardata"`
+	Type    string   `xml:"type,attr"`
+}
+
 type AtomEntry struct {
 	XMLName xml.Name `xml:"entry"`
-	Title   string   `xml:"title"`
-	Updated string   `xml:"updated"`
-	ID      string   `xml:"id"`
+	Title   *AtomTitle
+	Updated string `xml:"updated"`
+	ID      string `xml:"id"`
 	Link    *AtomLink
 	Summary *AtomSummary
 }
@@ -41,7 +48,7 @@ type AtomFeed struct {
 	XMLName  xml.Name `xml:"feed"`
 	Xmlns    string   `xml:"xmlns,attr"`
 	Title    string   `xml:"title"`
-	Subtitle string   `xml:"subtitle"`
+	Subtitle string   `xml:"subtitle,omitempty"`
 	ID       string   `xml:"id"`
 	Updated  string   `xml:"updated"`
 	Link     *AtomLink
@@ -62,12 +69,15 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 		rfc3339 := date.Format(time.RFC3339)
 
 		entry := AtomEntry{
-			Title:   p.Meta["title"],
+			Title:   &AtomTitle{Title: p.Meta["title"], Type: "html"},
 			Updated: rfc3339,
 			// tag:icyphox.sh,2019-10-23:blog/some-post/
 			ID: fmt.Sprintf(
 				"tag:%s,%s:%s",
-				config.Config.URL[8:], // strip https://
+				strings.TrimSuffix(
+					config.Config.URL[8:], // strip https://
+					"/",
+				),
 				dateStr,
 				filepath.Join(srcDir, p.Meta["slug"]),
 			),
