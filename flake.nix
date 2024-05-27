@@ -1,26 +1,48 @@
 {
   description = "a fast and minimal static site generator";
 
-  inputs =
+  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+
+  outputs =
+    { self
+    , nixpkgs
+    ,
+    }:
+    let
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+    in
     {
-      nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-      flake-utils.url = "github:numtide/flake-utils";
-      gomod2nix.url = "github:nix-community/gomod2nix";
-    };
-
-  outputs = { self, nixpkgs, flake-utils, gomod2nix }:
-    (flake-utils.lib.eachDefaultSystem
-      (system:
+      overlay = final: prev: {
+        vite = self.packages.${prev.system}.gostart;
+      };
+      nixosModule = import ./module.nix;
+      packages = forAllSystems (system:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = [ gomod2nix.overlays.default ];
-          };
-
+          pkgs = nixpkgsFor.${system};
         in
         {
-          packages.default = pkgs.callPackage ./. { };
-          devShells.default = import ./shell.nix { inherit pkgs; };
-        })
-    );
+          vite = pkgs.buildGoModule {
+            name = "vite";
+            rev = "master";
+            src = ./.;
+
+            vendorHash = "sha256-aHPT3Vl0is+NYaHqkdDjDjEVjvXnwCqK7Bbgm5FhBT0=";
+          };
+        });
+
+      defaultPackage = forAllSystems (system: self.packages.${system}.vite);
+      devShells = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
+        {
+          default = pkgs.mkShell {
+            nativeBuildInputs = with pkgs; [
+              go
+            ];
+          };
+        });
+    };
 }
