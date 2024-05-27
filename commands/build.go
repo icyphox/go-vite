@@ -13,13 +13,14 @@ import (
 	"git.icyphox.sh/vite/config"
 	"git.icyphox.sh/vite/markdown"
 	"git.icyphox.sh/vite/util"
+	"gopkg.in/yaml.v3"
 )
 
 const (
-	BUILD     = "build"
-	PAGES     = "pages"
-	TEMPLATES = "templates"
-	STATIC    = "static"
+	BuildDir     = "build"
+	PagesDir     = "pages"
+	TemplatesDir = "templates"
+	StaticDir    = "static"
 )
 
 type Pages struct {
@@ -48,16 +49,17 @@ func (pgs *Pages) initPages() error {
 
 func (pgs *Pages) processFiles() error {
 	for _, f := range pgs.Files {
-		if filepath.Ext(f) == ".md" {
+		switch filepath.Ext(f) {
+		case ".md":
 			// ex: pages/about.md
-			mdFile := filepath.Join(PAGES, f)
+			mdFile := filepath.Join(PagesDir, f)
 			var htmlDir string
 			// ex: build/index.html (root index)
 			if f == "_index.md" {
-				htmlDir = BUILD
+				htmlDir = BuildDir
 			} else {
 				htmlDir = filepath.Join(
-					BUILD,
+					BuildDir,
 					strings.TrimSuffix(f, ".md"),
 				)
 			}
@@ -76,7 +78,7 @@ func (pgs *Pages) processFiles() error {
 			}
 			if err = out.RenderHTML(
 				htmlFile,
-				TEMPLATES,
+				TemplatesDir,
 				struct {
 					Cfg  config.ConfigYaml
 					Meta markdown.Matter
@@ -85,9 +87,46 @@ func (pgs *Pages) processFiles() error {
 			); err != nil {
 				return err
 			}
-		} else {
-			src := filepath.Join(PAGES, f)
-			dst := filepath.Join(BUILD, f)
+		case ".yaml":
+			// ex: pages/reading.yaml
+			yamlFile := filepath.Join(PagesDir, f)
+			htmlDir := filepath.Join(BuildDir, strings.TrimSuffix(f, ".yaml"))
+			os.Mkdir(htmlDir, 0755)
+			htmlFile := filepath.Join(htmlDir, "index.html")
+
+			yb, err := os.ReadFile(yamlFile)
+			if err != nil {
+				return err
+			}
+
+			data := map[string]interface{}{}
+			err = yaml.Unmarshal(yb, &data)
+			if err != nil {
+				return fmt.Errorf("error: unmarshalling yaml file %s: %v", yamlFile, err)
+			}
+
+			meta := make(map[string]string)
+			for k, v := range data["meta"].(map[string]interface{}) {
+				meta[k] = v.(string)
+			}
+
+			out := markdown.Output{}
+			out.Meta = meta
+			if err = out.RenderHTML(
+				htmlFile,
+				TemplatesDir,
+				struct {
+					Cfg  config.ConfigYaml
+					Meta markdown.Matter
+					Yaml map[string]interface{}
+					Body string
+				}{config.Config, meta, data, ""},
+			); err != nil {
+				return err
+			}
+		default:
+			src := filepath.Join(PagesDir, f)
+			dst := filepath.Join(BuildDir, f)
 			if err := util.CopyFile(src, dst); err != nil {
 				return err
 			}
@@ -99,9 +138,9 @@ func (pgs *Pages) processFiles() error {
 func (pgs *Pages) processDirs() error {
 	for _, d := range pgs.Dirs {
 		// ex: build/blog
-		dstDir := filepath.Join(BUILD, d)
+		dstDir := filepath.Join(BuildDir, d)
 		// ex: pages/blog
-		srcDir := filepath.Join(PAGES, d)
+		srcDir := filepath.Join(PagesDir, d)
 		os.Mkdir(dstDir, 0755)
 
 		entries, err := os.ReadDir(srcDir)
@@ -133,7 +172,7 @@ func (pgs *Pages) processDirs() error {
 				}
 				if err = out.RenderHTML(
 					htmlFile,
-					TEMPLATES,
+					TemplatesDir,
 					struct {
 						Cfg  config.ConfigYaml
 						Meta markdown.Matter
@@ -168,7 +207,7 @@ func (pgs *Pages) processDirs() error {
 			return err
 		}
 
-		out.RenderHTML(indexHTML, TEMPLATES, struct {
+		out.RenderHTML(indexHTML, TemplatesDir, struct {
 			Cfg   config.ConfigYaml
 			Meta  markdown.Matter
 			Body  string
@@ -197,7 +236,7 @@ func Build() error {
 	}
 
 	// Clean the build directory.
-	if err := util.Clean(BUILD); err != nil {
+	if err := util.Clean(BuildDir); err != nil {
 		return err
 	}
 
@@ -242,9 +281,9 @@ func Build() error {
 
 	// Copy the static directory into build
 	// ex: build/static/
-	buildStatic := filepath.Join(BUILD, STATIC)
+	buildStatic := filepath.Join(BuildDir, StaticDir)
 	os.Mkdir(buildStatic, 0755)
-	if err := util.CopyDir(STATIC, buildStatic); err != nil {
+	if err := util.CopyDir(StaticDir, buildStatic); err != nil {
 		return err
 	}
 
