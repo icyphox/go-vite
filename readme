@@ -78,6 +78,32 @@ This deserves mention because Go templates don't recurse into
 subdirectories by default (template.ParseGlob uses filepath.Glob, and
 doesn't support deep-matching, i.e. **).
 
+vite also supports templating generic YAML files. Take for instance,
+pages/reading.yaml (https://git.icyphox.sh/site/blob/master/pages/reading.yaml):
+
+    meta:
+      template: reading.html
+      title: reading
+      subtitle: Tracking my reading.
+      description: I use this page to track my reading. 
+
+    books:
+      - 2024:
+        - name: Dune Messiah
+          link: https://en.wikipedia.org/wiki/Dune_Messiah
+          author: Frank Herbert
+          status: now reading
+      - 2023:
+        - name: Dune
+          link: https://en.wikipedia.org/wiki/Dune_(novel)
+          author: Frank Herbert
+          status: finished
+
+vite will look for a 'meta' key in the YAML file, and use the 'template'
+specified to render the page. The rest of the YAML file is available to
+you in the template as a map[string]interface{} called Yaml.
+
+
 More templating examples can be found at:
 https://git.icyphox.sh/site/tree/templates
 
