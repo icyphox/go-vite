@@ -15,7 +15,7 @@
     in
     {
       overlay = final: prev: {
-        vite = self.packages.${prev.system}.gostart;
+        vite = self.packages.${prev.system}.vite;
       };
       nixosModule = import ./module.nix;
       packages = forAllSystems (system:
