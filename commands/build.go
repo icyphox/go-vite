@@ -229,6 +229,9 @@ func (pgs *Pages) processDirs() error {
 // Core builder function. Converts markdown to html,
 // copies over non .md files, etc.
 func Build() error {
+	if err := preBuild(); err != nil {
+		return err
+	}
 	fmt.Print("vite: building... ")
 	pages := Pages{}
 	if err := pages.initPages(); err != nil {
@@ -286,7 +289,30 @@ func Build() error {
 	if err := util.CopyDir(StaticDir, buildStatic); err != nil {
 		return err
 	}
-
 	fmt.Print("done\n")
+
+	if err := postBuild(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func postBuild() error {
+	for _, cmd := range config.Config.PostBuild {
+		fmt.Println("vite: running post-build command:", cmd)
+		if err := util.RunCmd(cmd); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func preBuild() error {
+	for _, cmd := range config.Config.PreBuild {
+		fmt.Println("vite: running pre-build command:", cmd)
+		if err := util.RunCmd(cmd); err != nil {
+			return err
+		}
+	}
 	return nil
 }

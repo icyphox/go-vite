@@ -29,12 +29,14 @@ below struct:
     type ConfigYaml struct {
         Title           string `yaml:"title"`
         Desc            string `yaml:"description"`
-        DefaultTemplate string `yaml:"default-template"`
+        DefaultTemplate string `yaml:"-"`
         Author          struct {
             Name  string `yaml:"name"`
             Email string `yaml:"email"`
         } `yaml:"author"`
-        URL string `yaml:"url"`
+        URL       string   `yaml:"url"`
+        PreBuild  []string `yaml:"preBuild"`
+        PostBuild []string `yaml:"postBuild"`
     }
 
 Example config: https://git.icyphox.sh/site/tree/config.yaml
