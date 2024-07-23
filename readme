@@ -59,9 +59,10 @@ Non-index templates have access to the below objects:
 • Meta: map[string]string of the page's frontmatter metadata
 • Body: Contains the HTML
 
-Index templates have access to everything above, and a Posts object,
-which is a slice containing HTML and Meta. This is useful for iterating
-through to generate an index page.
+
+Index templates have access to everything above, and an Extra object,
+which is a slice of types.Post containing Body and Meta. This is useful
+for iterating through to generate an index page.
 Example: https://git.icyphox.sh/site/tree/templates/index.html
 
 Templates are written as standard Go templates (ref:
@@ -87,7 +88,7 @@ pages/reading.yaml (https://git.icyphox.sh/site/blob/master/pages/reading.yaml):
       template: reading.html
       title: reading
       subtitle: Tracking my reading.
-      description: I use this page to track my reading. 
+      description: I use this page to track my reading.
 
     books:
       - 2024:
@@ -129,3 +130,9 @@ The entire static/ directory gets copied over to build/, and can be
 used to reference static assets -- css, images, etc. pages/ supports
 only nesting one directory deep; for example: pages/blog/*.md will
 render, but pages/blog/foo/*.md will not.
+
+
+BUGS
+
+Or rather, (undocumented) features. There's probably a couple. If you are
+actually using this, feel free to reach out and I can try to help.
