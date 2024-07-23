@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"git.icyphox.sh/vite/commands"
-	"git.icyphox.sh/vite/commands/build"
 )
 
 func main() {
@@ -39,7 +38,7 @@ options:
 		}
 
 	case "build":
-		if err := build.Build(); err != nil {
+		if err := commands.Build(); err != nil {
 			fmt.Fprintf(os.Stderr, "error: build: %+v\n", err)
 		}
 
