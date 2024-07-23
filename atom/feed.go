@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/markdown"
+	"git.icyphox.sh/vite/types"
 )
 
 type AtomLink struct {
@@ -50,7 +50,7 @@ type AtomFeed struct {
 }
 
 // Creates a new Atom feed.
-func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
+func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 	entries := []AtomEntry{}
 
 	for _, p := range posts {
@@ -76,7 +76,7 @@ func NewAtomFeed(srcDir string, posts []markdown.Output) ([]byte, error) {
 			Summary: &AtomSummary{
 				Content: fmt.Sprintf("<h2>%s</h2>\n%s",
 					p.Meta["subtitle"],
-					string(p.HTML)),
+					string(p.Body)),
 				Type: "html",
 			},
 		}
