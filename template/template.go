@@ -57,3 +57,12 @@ func (t *Tmpl) Load(dir string) (err error) {
 	}
 	return nil
 }
+
+func (t *Tmpl) Write(dest string, name string, data interface{}) error {
+	w, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+
+	return t.ExecuteTemplate(w, name, data)
+}

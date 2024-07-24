@@ -51,15 +51,7 @@ func (y *YAML) template(dest, tmplDir string, data interface{}) error {
 		return err
 	}
 
-	w, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-
-	if err = tmpl.ExecuteTemplate(w, metaTemplate, data); err != nil {
-		return err
-	}
-	return nil
+	return tmpl.Write(dest, metaTemplate, data)
 }
 
 func (y *YAML) Render(dest string, data interface{}) error {

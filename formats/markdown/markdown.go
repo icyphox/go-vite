@@ -66,15 +66,7 @@ func (md *Markdown) template(dest, tmplDir string, data interface{}) error {
 		return err
 	}
 
-	w, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-
-	if err = tmpl.ExecuteTemplate(w, metaTemplate, data); err != nil {
-		return err
-	}
-	return nil
+	return tmpl.Write(dest, metaTemplate, data)
 }
 
 // extract takes the source markdown page, extracts the frontmatter
