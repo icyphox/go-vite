@@ -107,6 +107,11 @@ func (md *Markdown) Render(dest string, data interface{}) error {
 		return fmt.Errorf("markdown: error extracting frontmatter: %w", err)
 	}
 
+	if md.frontmatter["draft"] == "true" {
+		fmt.Printf("vite: skipping draft %s\n", md.Path)
+		return nil
+	}
+
 	err = md.template(dest, types.TemplatesDir, templateData{
 		config.Config,
 		md.frontmatter,

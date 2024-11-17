@@ -19,6 +19,7 @@ slug: %s
 title:
 subtitle:
 date: %s
+draft: true
 ---`, url, time.Now().Format("2006-01-02"))
 
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {

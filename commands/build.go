@@ -111,7 +111,6 @@ func Build() error {
 	if err := util.CopyDir(types.StaticDir, buildStatic); err != nil {
 		return err
 	}
-	fmt.Println("done")
 
 	return nil
 }
