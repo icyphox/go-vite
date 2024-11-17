@@ -96,7 +96,7 @@ type templateData struct {
 	Extra interface{}
 }
 
-func (md *Markdown) Render(dest string, data interface{}) error {
+func (md *Markdown) Render(dest string, data interface{}, drafts bool) error {
 	source, err := os.ReadFile(md.Path)
 	if err != nil {
 		return fmt.Errorf("markdown: error reading file: %w", err)
@@ -108,8 +108,11 @@ func (md *Markdown) Render(dest string, data interface{}) error {
 	}
 
 	if md.frontmatter["draft"] == "true" {
-		fmt.Printf("vite: skipping draft %s\n", md.Path)
-		return nil
+		if !drafts {
+			fmt.Printf("vite: skipping draft %s\n", md.Path)
+			return nil
+		}
+		fmt.Printf("vite: rendering draft %s\n", md.Path)
 	}
 
 	err = md.template(dest, types.TemplatesDir, templateData{

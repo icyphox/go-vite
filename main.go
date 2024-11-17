@@ -16,7 +16,7 @@ A simple and minimal static site generator.
 
 options:
     init PATH                   create vite project at PATH
-    build                       builds the current project
+    build [--drafts]            builds the current project
     new PATH                    create a new markdown post
     serve [HOST:PORT]           serves the 'build' directory
 `
@@ -38,7 +38,11 @@ options:
 		}
 
 	case "build":
-		if err := commands.Build(); err != nil {
+		var drafts bool
+		if len(args) > 2 && args[2] == "--drafts" {
+			drafts = true
+		}
+		if err := commands.Build(drafts); err != nil {
 			fmt.Fprintf(os.Stderr, "error: build: %+v\n", err)
 		}
 

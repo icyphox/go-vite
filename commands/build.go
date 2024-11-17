@@ -81,7 +81,7 @@ func NewPages() (*Pages, error) {
 
 // Build is the core builder function. Converts markdown/yaml
 // to html, copies over non-.md/.yaml files, etc.
-func Build() error {
+func Build(drafts bool) error {
 	if err := preBuild(); err != nil {
 		return err
 	}
@@ -96,11 +96,11 @@ func Build() error {
 		return err
 	}
 
-	if err := pages.ProcessFiles(); err != nil {
+	if err := pages.ProcessFiles(drafts); err != nil {
 		return err
 	}
 
-	if err := pages.ProcessDirectories(); err != nil {
+	if err := pages.ProcessDirectories(drafts); err != nil {
 		return err
 	}
 
@@ -117,7 +117,7 @@ func Build() error {
 
 // ProcessFiles handles root level files under 'pages',
 // for example: 'pages/_index.md' or 'pages/about.md'.
-func (p *Pages) ProcessFiles() error {
+func (p *Pages) ProcessFiles(drafts bool) error {
 	for _, f := range p.Files {
 		var htmlDir string
 		if f.Basename() == "_index.md" {
@@ -134,7 +134,7 @@ func (p *Pages) ProcessFiles() error {
 				return err
 			}
 		}
-		if err := f.Render(destFile, nil); err != nil {
+		if err := f.Render(destFile, nil, drafts); err != nil {
 			return fmt.Errorf("error: failed to render %s: %w", destFile, err)
 		}
 	}
@@ -143,7 +143,7 @@ func (p *Pages) ProcessFiles() error {
 
 // ProcessDirectories handles directories of posts under 'pages',
 // for example: 'pages/photos/foo.md' or 'pages/blog/bar.md'.
-func (p *Pages) ProcessDirectories() error {
+func (p *Pages) ProcessDirectories(drafts bool) error {
 	for _, dir := range p.Dirs {
 		dstDir := filepath.Join(types.BuildDir, dir.Name)
 		if err := os.MkdirAll(dstDir, 0755); err != nil {
@@ -163,13 +163,16 @@ func (p *Pages) ProcessDirectories() error {
 				return fmt.Errorf("error: failed to create directory: %s: %w", dstDir, err)
 			}
 
-			if err := file.Render(dstFile, nil); err != nil {
+			if err := file.Render(dstFile, nil, drafts); err != nil {
 				return fmt.Errorf("error: failed to render %s: %w", dstFile, err)
 			}
 
 			post.Meta = file.Frontmatter()
 			post.Body = file.Body()
-			posts = append(posts, post)
+			isDraft := post.Meta["draft"] == "true"
+			if !isDraft || (isDraft && drafts) {
+				posts = append(posts, post)
+			}
 		}
 
 		sort.Slice(posts, func(i, j int) bool {
@@ -184,7 +187,7 @@ func (p *Pages) ProcessDirectories() error {
 			indexMd := filepath.Join(types.PagesDir, dir.Name, "_index.md")
 			index := markdown.Markdown{Path: indexMd}
 			dstFile := filepath.Join(dstDir, "index.html")
-			if err := index.Render(dstFile, posts); err != nil {
+			if err := index.Render(dstFile, posts, false); err != nil {
 				return fmt.Errorf("error: failed to render index %s: %w", dstFile, err)
 			}
 		}

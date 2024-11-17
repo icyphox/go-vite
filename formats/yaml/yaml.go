@@ -54,7 +54,7 @@ func (y *YAML) template(dest, tmplDir string, data interface{}) error {
 	return tmpl.Write(dest, metaTemplate, data)
 }
 
-func (y *YAML) Render(dest string, data interface{}) error {
+func (y *YAML) Render(dest string, data interface{}, drafts bool) error {
 	yamlBytes, err := os.ReadFile(y.Path)
 	if err != nil {
 		return fmt.Errorf("yaml: failed to read file: %s: %w", y.Path, err)

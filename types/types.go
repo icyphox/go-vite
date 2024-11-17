@@ -13,7 +13,7 @@ type File interface {
 	// page frontmatter and the body, as template params. Templates are read
 	// from types.TemplateDir and the final html is written to dest,
 	// with necessary directories being created.
-	Render(dest string, data interface{}) error
+	Render(dest string, data interface{}, drafts bool) error
 
 	// Frontmatter will not be populated if Render hasn't been called.
 	Frontmatter() map[string]string
