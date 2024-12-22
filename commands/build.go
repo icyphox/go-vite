@@ -26,6 +26,9 @@ type Dir struct {
 type Pages struct {
 	Dirs  []Dir
 	Files []types.File
+
+	// A map of directories to their respective posts.
+	AllPosts map[string][]types.Post
 }
 
 func NewPages() (*Pages, error) {
@@ -35,6 +38,8 @@ func NewPages() (*Pages, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	pages.AllPosts = make(map[string][]types.Post)
 
 	for _, entry := range entries {
 		if entry.IsDir() {
@@ -96,11 +101,11 @@ func Build(drafts bool) error {
 		return err
 	}
 
-	if err := pages.ProcessFiles(drafts); err != nil {
+	if err := pages.ProcessDirectories(drafts); err != nil {
 		return err
 	}
 
-	if err := pages.ProcessDirectories(drafts); err != nil {
+	if err := pages.ProcessFiles(drafts); err != nil {
 		return err
 	}
 
@@ -134,7 +139,7 @@ func (p *Pages) ProcessFiles(drafts bool) error {
 				return err
 			}
 		}
-		if err := f.Render(destFile, nil, drafts); err != nil {
+		if err := f.Render(destFile, p.AllPosts, drafts); err != nil {
 			return fmt.Errorf("error: failed to render %s: %w", destFile, err)
 		}
 	}
@@ -198,6 +203,8 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 		}
 		feedFile := filepath.Join(dstDir, "feed.xml")
 		os.WriteFile(feedFile, xml, 0755)
+
+		p.AllPosts[dir.Name] = posts
 	}
 
 	return nil
