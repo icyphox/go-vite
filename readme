@@ -52,6 +52,13 @@ by running:
     go run contrib/style.go > syntax.css
 
 
+SPECIAL META DIRECTIVES
+
+• draft: sets a post to draft (boolean) and will only be rendered if
+  the build command is run with the --drafts flag.
+• atroot: sets a post to be also rendered at the root of the site.
+
+
 TEMPLATING
 
 Non-index templates have access to the below objects:

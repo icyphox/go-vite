@@ -178,6 +178,14 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 			if !isDraft || (isDraft && drafts) {
 				posts = append(posts, post)
 			}
+
+			// Copy the post to the root if it's marked as such.
+			// ex: build/blog/foo-bar -> build/foo-bar
+			if post.Meta["atroot"] == "true" {
+				os.Mkdir(filepath.Join(types.BuildDir, slug), 0755)
+				dstFile := filepath.Join(types.BuildDir, slug, "index.html")
+				util.CopyFile(filepath.Join(dstDir, slug, "index.html"), dstFile)
+			}
 		}
 
 		sort.Slice(posts, func(i, j int) bool {

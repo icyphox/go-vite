@@ -14,6 +14,7 @@ func New(path string) error {
 	url := strings.TrimSuffix(file, filepath.Ext(file))
 
 	content := fmt.Sprintf(`---
+atroot: true
 template:
 slug: %s
 title:
