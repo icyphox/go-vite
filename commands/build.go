@@ -183,8 +183,8 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 			// ex: build/blog/foo-bar -> build/foo-bar
 			if post.Meta["atroot"] == "true" {
 				os.Mkdir(filepath.Join(types.BuildDir, slug), 0755)
-				dstFile := filepath.Join(types.BuildDir, slug+".html")
-				util.CopyFile(filepath.Join(dstDir, slug, "index.html"), dstFile)
+				df := filepath.Join(types.BuildDir, slug+".html")
+				util.CopyFile(filepath.Join(dstDir, slug, "index.html"), df)
 			}
 		}
 
@@ -205,7 +205,7 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 			}
 		}
 
-		xml, err := atom.NewAtomFeed(filepath.Join(types.PagesDir, dir.Name), posts)
+		xml, err := atom.NewAtomFeed(dir.Name, posts)
 		if err != nil {
 			return fmt.Errorf("error: failed to create atom feed for: %s: %w", dir.Name, err)
 		}
