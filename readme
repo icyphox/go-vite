@@ -5,7 +5,7 @@ A fast (this time, actually) and minimal static site generator.
 
 INSTALLING
 
-    go install git.icyphox.sh/vite@latest
+    go install tangled.sh/icyphox.sh/vite@latest
 
 
 USAGE
@@ -39,7 +39,7 @@ below struct:
         PostBuild []string `yaml:"postBuild"`
     }
 
-Example config: https://git.icyphox.sh/site/tree/config.yaml
+Example config: https://tangled.sh/@icyphox.sh/site/blob/master/config.yaml
 
 
 SYNTAX HIGHLIGHTING
