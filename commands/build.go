@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"git.icyphox.sh/vite/atom"
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/formats"
-	"git.icyphox.sh/vite/formats/markdown"
-	"git.icyphox.sh/vite/formats/yaml"
-	"git.icyphox.sh/vite/types"
-	"git.icyphox.sh/vite/util"
+	"tangled.sh/icyphox.sh/vite/atom"
+	"tangled.sh/icyphox.sh/vite/config"
+	"tangled.sh/icyphox.sh/vite/formats"
+	"tangled.sh/icyphox.sh/vite/formats/markdown"
+	"tangled.sh/icyphox.sh/vite/formats/yaml"
+	"tangled.sh/icyphox.sh/vite/types"
+	"tangled.sh/icyphox.sh/vite/util"
 )
 
 type Dir struct {
@@ -181,7 +181,7 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 
 			// Copy the post to the root if it's marked as such.
 			// ex: build/blog/foo-bar -> build/foo-bar
-			if post.Meta["atroot"] == "true" {
+			if post.Meta["atroot"].(bool) {
 				os.Mkdir(filepath.Join(types.BuildDir, slug), 0755)
 				df := filepath.Join(types.BuildDir, slug+".html")
 				util.CopyFile(filepath.Join(dstDir, slug, "index.html"), df)
@@ -189,8 +189,8 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 		}
 
 		sort.Slice(posts, func(i, j int) bool {
-			dateStr1 := posts[j].Meta["date"]
-			dateStr2 := posts[i].Meta["date"]
+			dateStr1 := posts[j].Meta["date"].(string)
+			dateStr2 := posts[i].Meta["date"].(string)
 			date1, _ := time.Parse("2006-01-02", dateStr1)
 			date2, _ := time.Parse("2006-01-02", dateStr2)
 			return date1.Before(date2)

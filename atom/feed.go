@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/types"
+	"tangled.sh/icyphox.sh/vite/config"
+	"tangled.sh/icyphox.sh/vite/types"
 )
 
 type AtomLink struct {
@@ -54,7 +54,7 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 	entries := []AtomEntry{}
 
 	for _, p := range posts {
-		dateStr := p.Meta["date"]
+		dateStr := p.Meta["date"].(string)
 		date, err := time.Parse("2006-01-02", dateStr)
 		if err != nil {
 			return nil, err
@@ -62,20 +62,20 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 		rfc3339 := date.Format(time.RFC3339)
 
 		entry := AtomEntry{
-			Title:   p.Meta["title"],
+			Title:   p.Meta["title"].(string),
 			Updated: rfc3339,
 			// tag:icyphox.sh,2019-10-23:blog/some-post/
 			ID: fmt.Sprintf(
 				"tag:%s,%s:%s",
 				config.Config.URL[8:], // strip https://
 				dateStr,
-				filepath.Join(srcDir, p.Meta["slug"]),
+				filepath.Join(srcDir, p.Meta["slug"].(string)),
 			),
 			// filepath.Join strips the second / in http://
-			Link: &AtomLink{Href: config.Config.URL + filepath.Join(srcDir, p.Meta["slug"])},
+			Link: &AtomLink{Href: config.Config.URL + filepath.Join(srcDir, p.Meta["slug"].(string))},
 			Summary: &AtomSummary{
 				Content: fmt.Sprintf("<h2>%s</h2>\n%s",
-					p.Meta["subtitle"],
+					p.Meta["subtitle"].(string),
 					string(p.Body)),
 				Type: "html",
 			},

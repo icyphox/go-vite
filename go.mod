@@ -1,4 +1,4 @@
-module git.icyphox.sh/vite
+module tangled.sh/icyphox.sh/vite
 
 go 1.21
 

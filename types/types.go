@@ -16,7 +16,7 @@ type File interface {
 	Render(dest string, data interface{}, drafts bool) error
 
 	// Frontmatter will not be populated if Render hasn't been called.
-	Frontmatter() map[string]string
+	Frontmatter() map[string]any
 	// Body will not be populated if Render hasn't been called.
 	Body() string
 	Basename() string
@@ -24,7 +24,7 @@ type File interface {
 
 // Only used for building indexes and Atom feeds
 type Post struct {
-	Meta map[string]string
+	Meta map[string]any
 	// HTML-formatted body of post
 	Body string
 }

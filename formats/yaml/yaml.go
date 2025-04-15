@@ -7,35 +7,40 @@ import (
 	gotmpl "text/template"
 	"time"
 
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/template"
-	"git.icyphox.sh/vite/types"
 	"gopkg.in/yaml.v3"
+	"tangled.sh/icyphox.sh/vite/config"
+	"tangled.sh/icyphox.sh/vite/template"
+	"tangled.sh/icyphox.sh/vite/types"
 )
 
 type YAML struct {
 	Path string
 
-	meta map[string]string
+	meta map[string]any
 }
 
 func (*YAML) Ext() string        { return ".yaml" }
 func (*YAML) Body() string       { return "" }
 func (y *YAML) Basename() string { return filepath.Base(y.Path) }
 
-func (y *YAML) Frontmatter() map[string]string {
+func (y *YAML) Frontmatter() map[string]any {
 	return y.meta
 }
 
 type templateData struct {
 	Cfg  config.ConfigYaml
-	Meta map[string]string
-	Yaml map[string]interface{}
+	Meta map[string]any
+	Yaml map[string]any
 	Body string
 }
 
-func (y *YAML) template(dest, tmplDir string, data interface{}) error {
-	metaTemplate := y.meta["template"]
+func (y *YAML) template(dest, tmplDir string, data any) error {
+	var metaTemplate string
+	if templateVal, ok := y.meta["template"]; ok {
+		if strVal, isStr := templateVal.(string); isStr {
+			metaTemplate = strVal
+		}
+	}
 	if metaTemplate == "" {
 		metaTemplate = config.Config.DefaultTemplate
 	}
@@ -54,27 +59,24 @@ func (y *YAML) template(dest, tmplDir string, data interface{}) error {
 	return tmpl.Write(dest, metaTemplate, data)
 }
 
-func (y *YAML) Render(dest string, data interface{}, drafts bool) error {
+func (y *YAML) Render(dest string, data any, drafts bool) error {
 	yamlBytes, err := os.ReadFile(y.Path)
 	if err != nil {
 		return fmt.Errorf("yaml: failed to read file: %s: %w", y.Path, err)
 	}
 
-	yamlData := map[string]interface{}{}
+	yamlData := map[string]any{}
 	err = yaml.Unmarshal(yamlBytes, yamlData)
 	if err != nil {
 		return fmt.Errorf("yaml: failed to unmarshal yaml file: %s: %w", y.Path, err)
 	}
 
-	metaInterface := yamlData["meta"].(map[string]interface{})
-
-	meta := make(map[string]string)
-	for k, v := range metaInterface {
-		vStr := convertToString(v)
-		meta[k] = vStr
+	metaInterface, ok := yamlData["meta"].(map[string]any)
+	if !ok {
+		return fmt.Errorf("yaml: meta section is not a map: %s", y.Path)
 	}
 
-	y.meta = meta
+	y.meta = metaInterface
 
 	err = y.template(dest, types.TemplatesDir, templateData{
 		config.Config,
@@ -89,7 +91,7 @@ func (y *YAML) Render(dest string, data interface{}, drafts bool) error {
 	return nil
 }
 
-func convertToString(value interface{}) string {
+func convertToString(value any) string {
 	// Infer type and convert to string
 	switch v := value.(type) {
 	case string:

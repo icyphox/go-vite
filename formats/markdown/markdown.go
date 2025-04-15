@@ -8,10 +8,10 @@ import (
 	gotmpl "text/template"
 	"time"
 
-	"git.icyphox.sh/vite/config"
-	"git.icyphox.sh/vite/template"
-	"git.icyphox.sh/vite/types"
 	"github.com/adrg/frontmatter"
+	"tangled.sh/icyphox.sh/vite/config"
+	"tangled.sh/icyphox.sh/vite/template"
+	"tangled.sh/icyphox.sh/vite/types"
 
 	bf "git.icyphox.sh/grayfriday"
 )
@@ -26,7 +26,7 @@ var (
 
 type Markdown struct {
 	body        []byte
-	frontmatter map[string]string
+	frontmatter map[string]any
 	Path        string
 }
 
@@ -49,9 +49,9 @@ func mdToHtml(source []byte) []byte {
 // template checks the frontmatter for a specified template or falls back
 // to the default template -- to which it, well, templates whatever is in
 // data and writes it to dest.
-func (md *Markdown) template(dest, tmplDir string, data interface{}) error {
-	metaTemplate := md.frontmatter["template"]
-	if metaTemplate == "" {
+func (md *Markdown) template(dest, tmplDir string, data any) error {
+	metaTemplate, ok := md.frontmatter["template"].(string)
+	if !ok || metaTemplate == "" {
 		metaTemplate = config.Config.DefaultTemplate
 	}
 
@@ -81,7 +81,7 @@ func (md *Markdown) extractFrontmatter(source []byte) error {
 	return nil
 }
 
-func (md *Markdown) Frontmatter() map[string]string {
+func (md *Markdown) Frontmatter() map[string]any {
 	return md.frontmatter
 }
 
@@ -91,12 +91,12 @@ func (md *Markdown) Body() string {
 
 type templateData struct {
 	Cfg   config.ConfigYaml
-	Meta  map[string]string
+	Meta  map[string]any
 	Body  string
-	Extra interface{}
+	Extra any
 }
 
-func (md *Markdown) Render(dest string, data interface{}, drafts bool) error {
+func (md *Markdown) Render(dest string, data any, drafts bool) error {
 	source, err := os.ReadFile(md.Path)
 	if err != nil {
 		return fmt.Errorf("markdown: error reading file: %w", err)
@@ -107,7 +107,8 @@ func (md *Markdown) Render(dest string, data interface{}, drafts bool) error {
 		return fmt.Errorf("markdown: error extracting frontmatter: %w", err)
 	}
 
-	if md.frontmatter["draft"] == "true" {
+	isDraft, ok := md.frontmatter["draft"].(bool)
+	if ok && isDraft {
 		if !drafts {
 			fmt.Printf("vite: skipping draft %s\n", md.Path)
 			return nil
