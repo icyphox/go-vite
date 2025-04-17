@@ -3,6 +3,7 @@ package atom
 import (
 	"encoding/xml"
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"time"
 
@@ -80,8 +81,7 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 				dateStr,
 				filepath.Join(srcDir, p.Meta["slug"].(string)),
 			),
-			// filepath.Join strips the second / in http://
-			Link: &AtomLink{Href: config.Config.URL + filepath.Join(srcDir, p.Meta["slug"].(string))},
+			Link: newAtomLink(config.Config.URL, srcDir, p.Meta["slug"].(string)),
 			Summary: &AtomSummary{
 				Content: summaryContent,
 				Type:    "html",
@@ -112,4 +112,22 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 	}
 	// Add the <?xml...> header.
 	return []byte(xml.Header + string(feedXML)), nil
+}
+
+// Creates a new Atom link.
+//
+// Example:
+//
+//	newAtomLink("https://example.com", "blog", "some-post")
+//	// → <link href="https://blog.example.com/some-post"></link>
+func newAtomLink(base string, subdomain string, slug string) *AtomLink {
+	baseURL, err := url.Parse(base)
+	if err != nil {
+		return nil
+	}
+
+	baseURL.Host = subdomain + "." + baseURL.Host
+	baseURL.Path = slug
+
+	return &AtomLink{Href: baseURL.String()}
 }
