@@ -69,7 +69,7 @@ func (md *Markdown) template(dest, tmplDir string, data any) error {
 	return tmpl.Write(dest, metaTemplate, data)
 }
 
-// extract takes the source markdown page, extracts the frontmatter
+// extractFrontmatter takes the source markdown page, extracts the frontmatter
 // and body. The body is converted from markdown to html here.
 func (md *Markdown) extractFrontmatter(source []byte) error {
 	r := bytes.NewReader(source)

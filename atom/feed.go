@@ -61,6 +61,15 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 		}
 		rfc3339 := date.Format(time.RFC3339)
 
+		var summaryContent string
+		if subtitle, ok := p.Meta["subtitle"]; ok {
+			summaryContent = fmt.Sprintf("<h2>%s</h2>\n%s",
+				subtitle.(string),
+				string(p.Body))
+		} else {
+			summaryContent = string(p.Body)
+		}
+
 		entry := AtomEntry{
 			Title:   p.Meta["title"].(string),
 			Updated: rfc3339,
@@ -74,10 +83,8 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 			// filepath.Join strips the second / in http://
 			Link: &AtomLink{Href: config.Config.URL + filepath.Join(srcDir, p.Meta["slug"].(string))},
 			Summary: &AtomSummary{
-				Content: fmt.Sprintf("<h2>%s</h2>\n%s",
-					p.Meta["subtitle"].(string),
-					string(p.Body)),
-				Type: "html",
+				Content: summaryContent,
+				Type:    "html",
 			},
 		}
 		entries = append(entries, entry)

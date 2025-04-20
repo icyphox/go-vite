@@ -28,7 +28,7 @@
             rev = "master";
             src = ./.;
 
-            vendorHash = "sha256-aHPT3Vl0is+NYaHqkdDjDjEVjvXnwCqK7Bbgm5FhBT0=";
+            vendorHash = "sha256-jZO2ZX5Ik3TxBWMkq4TkA3TZvzGTQsuKRNKZFQt3gac=";
           };
         });
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/alecthomas/chroma"
 	"github.com/alecthomas/chroma/formatters/html"
+	"github.com/alecthomas/chroma/styles"
 )
 
 var syntax = chroma.MustNewStyle("syntax", chroma.StyleEntries{
@@ -56,5 +57,5 @@ var syntax = chroma.MustNewStyle("syntax", chroma.StyleEntries{
 
 func main() {
 	formatter := html.New(html.WithClasses(true))
-	formatter.WriteCSS(os.Stdout, syntax)
+	formatter.WriteCSS(os.Stdout, styles.Get("catppuccin-latte"))
 }

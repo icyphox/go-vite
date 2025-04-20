@@ -87,6 +87,8 @@ func NewPages() (*Pages, error) {
 // Build is the core builder function. Converts markdown/yaml
 // to html, copies over non-.md/.yaml files, etc.
 func Build(drafts bool) error {
+	startTime := time.Now()
+
 	if err := preBuild(); err != nil {
 		return err
 	}
@@ -116,6 +118,9 @@ func Build(drafts bool) error {
 	if err := util.CopyDir(types.StaticDir, buildStatic); err != nil {
 		return err
 	}
+
+	buildTime := time.Since(startTime)
+	fmt.Printf("vite: completed in %v\n", buildTime)
 
 	return nil
 }
@@ -181,7 +186,8 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 
 			// Copy the post to the root if it's marked as such.
 			// ex: build/blog/foo-bar -> build/foo-bar
-			if post.Meta["atroot"].(bool) {
+			atroot, ok := post.Meta["atroot"]
+			if ok && atroot.(bool) {
 				os.Mkdir(filepath.Join(types.BuildDir, slug), 0755)
 				df := filepath.Join(types.BuildDir, slug+".html")
 				util.CopyFile(filepath.Join(dstDir, slug, "index.html"), df)

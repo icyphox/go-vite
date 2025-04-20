@@ -76,7 +76,12 @@ func (y *YAML) Render(dest string, data any, drafts bool) error {
 		return fmt.Errorf("yaml: meta section is not a map: %s", y.Path)
 	}
 
-	y.meta = metaInterface
+	stringMeta := make(map[string]any)
+	for k, v := range metaInterface {
+		stringMeta[k] = convertToString(v)
+	}
+
+	y.meta = stringMeta
 
 	err = y.template(dest, types.TemplatesDir, templateData{
 		config.Config,
