@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -10,11 +11,11 @@ import (
 
 	"tangled.sh/icyphox.sh/vite/atom"
 	"tangled.sh/icyphox.sh/vite/config"
+	util "tangled.sh/icyphox.sh/vite/fileutil"
 	"tangled.sh/icyphox.sh/vite/formats"
 	"tangled.sh/icyphox.sh/vite/formats/markdown"
 	"tangled.sh/icyphox.sh/vite/formats/yaml"
 	"tangled.sh/icyphox.sh/vite/types"
-	"tangled.sh/icyphox.sh/vite/util"
 )
 
 type Dir struct {
@@ -224,10 +225,25 @@ func (p *Pages) ProcessDirectories(drafts bool) error {
 	return nil
 }
 
+func runCmd(cmd string, args ...string) error {
+	parts := strings.Fields(cmd)
+	if len(parts) == 0 {
+		return fmt.Errorf("error: is there an empty command?")
+	}
+
+	execCmd := exec.Command(parts[0], parts[1:]...)
+
+	output, err := execCmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error: command %q failed with %v: %s", cmd, err, output)
+	}
+	return nil
+}
+
 func postBuild() error {
 	for _, cmd := range config.Config.PostBuild {
 		fmt.Println("vite: running post-build command:", cmd)
-		if err := util.RunCmd(cmd); err != nil {
+		if err := runCmd(cmd); err != nil {
 			return err
 		}
 	}
@@ -237,7 +253,7 @@ func postBuild() error {
 func preBuild() error {
 	for _, cmd := range config.Config.PreBuild {
 		fmt.Println("vite: running pre-build command:", cmd)
-		if err := util.RunCmd(cmd); err != nil {
+		if err := runCmd(cmd); err != nil {
 			return err
 		}
 	}
