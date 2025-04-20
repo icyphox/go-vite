@@ -3,7 +3,7 @@ package formats
 import (
 	"path/filepath"
 
-	"tangled.sh/icyphox.sh/vite/util"
+	util "tangled.sh/icyphox.sh/vite/fileutil"
 )
 
 // Anything is a stub format for unrecognized files
