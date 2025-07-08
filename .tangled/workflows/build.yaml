@@ -1,0 +1,14 @@
+when:
+  - event: ["push"]
+    branch: ["master"]
+
+dependencies:
+  nixpkgs:
+    - go
+    - gcc
+
+steps:
+  - name: build vite
+    command: |
+      nix build
+      ls ./result/bin/vite
