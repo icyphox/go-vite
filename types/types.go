@@ -27,4 +27,6 @@ type Post struct {
 	Meta map[string]any
 	// HTML-formatted body of post
 	Body string
+	// Whether this post should be shown (based on draft status and drafts flag)
+	Allowed bool
 }

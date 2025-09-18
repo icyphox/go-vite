@@ -90,10 +90,11 @@ func (md *Markdown) Body() string {
 }
 
 type templateData struct {
-	Cfg   config.ConfigYaml
-	Meta  map[string]any
-	Body  string
-	Extra any
+	Cfg     config.ConfigYaml
+	Meta    map[string]any
+	Body    string
+	Extra   any
+	Allowed bool
 }
 
 func (md *Markdown) Render(dest string, data any, drafts bool) error {
@@ -116,11 +117,15 @@ func (md *Markdown) Render(dest string, data any, drafts bool) error {
 		fmt.Printf("vite: rendering draft %s\n", md.Path)
 	}
 
+	// allow post if it's not a draft, or if it's a draft and drafts are enabled
+	allowed := !isDraft || drafts
+
 	err = md.template(dest, types.TemplatesDir, templateData{
 		config.Config,
 		md.frontmatter,
 		string(md.body),
 		data,
+		allowed,
 	})
 	if err != nil {
 		return fmt.Errorf("markdown: failed to render to destination %s: %w", dest, err)
