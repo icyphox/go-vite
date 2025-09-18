@@ -114,20 +114,12 @@ func NewAtomFeed(srcDir string, posts []types.Post) ([]byte, error) {
 	return []byte(xml.Header + string(feedXML)), nil
 }
 
-// Creates a new Atom link.
-//
-// Example:
-//
-//	newAtomLink("https://example.com", "blog", "some-post")
-//	// → <link href="https://blog.example.com/some-post"></link>
-func newAtomLink(base string, subdomain string, slug string) *AtomLink {
+func newAtomLink(base, subDir, slug string) *AtomLink {
 	baseURL, err := url.Parse(base)
 	if err != nil {
 		return nil
 	}
 
-	baseURL.Host = subdomain + "." + baseURL.Host
-	baseURL.Path = slug
-
+	baseURL.Path = filepath.Join(subDir, slug)
 	return &AtomLink{Href: baseURL.String()}
 }
