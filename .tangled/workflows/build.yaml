@@ -1,3 +1,4 @@
+engine: nixery
 when:
   - event: ["push"]
     branch: ["master"]
